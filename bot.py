@@ -1,10 +1,7 @@
-from email.headerregistry import MessageIDHeader
 from email.mime import application
-import imp
 import logging
-from datetime import date, datetime
+from datetime import datetime
 from datetime import time
-from tables import Unknown
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CallbackContext, CommandHandler, MessageHandler, JobQueue
 import os
