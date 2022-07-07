@@ -28,7 +28,6 @@ def get_diff_working_hours(username: str):
     else:
         now = datetime.now()
         stop = datetime.now().replace(hour=stop_working[username], minute=0, second=0)
-        print(f'STOP: {stop}')
         if now.time() < time(stop_working[username] - 9, 00, 00) or now.time() > time(stop_working[username], 00, 00):
             message = 'леее, куда прёшь, пора отдыхать'
         else:
@@ -43,22 +42,22 @@ def is_rashid_relaxing():
     return (now < time(9, 00, 00) or now > time(18, 00, 00))
 
 
-async def end_of_work(context: CallbackContext.DEFAULT_TYPE):
+async def end_of_work(context: CallbackContext):
     await context.bot.send_message(chat_id=context.job.chat_id, text='А Рашид закончил)))')
 
 
-async def daily_job(update: Update, context: CallbackContext.DEFAULT_TYPE):
+async def daily_job(update: Update, context: CallbackContext):
     # TODO: fix actual time - 3 hours time zone
     end_time = time(15, 00, 00)
     await context.job_queue.run_daily(end_of_work, end_time, days=tuple(range(5)), chat_id=update.message.chat_id)
 
 
-async def start(update: Update, context: CallbackContext.DEFAULT_TYPE):
+async def start(update: Update, context: CallbackContext):
     start_text = f'Привет, я лысый счетовод. Я подсказываю, сколько часов осталось до конца рабочего дня (команда /hours).'
     await context.bot.send_message(chat_id=update.effective_chat.id, text=start_text)
     
 
-async def get_working_hours_remaining(update: Update, context: CallbackContext.DEFAULT_TYPE):
+async def get_working_hours_remaining(update: Update, context: CallbackContext):
     username, first_name = update.message.from_user['username'], update.message.from_user['first_name']
     print(update.message.from_user)
     
