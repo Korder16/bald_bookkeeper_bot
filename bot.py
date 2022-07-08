@@ -75,7 +75,7 @@ async def get_working_hours_remaining(update: Update, context: CallbackContext):
 
 
 if __name__ == '__main__':
-    application = ApplicationBuilder().token(os.environ["TOKEN"]).build()
+    application = ApplicationBuilder().token(os.environ["BALD_BOOKKEEPER_BOT_TOKEN"]).build()
 
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('time', get_working_hours_remaining))
