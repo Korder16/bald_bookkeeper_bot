@@ -27,6 +27,7 @@ async def help(message: types.Message):
             fmt.text('время - показывает, сколько времени осталось до конца рабочего дня;'),
             fmt.text('кости - подбрасывает игральные кости;'),
             fmt.text('рама - показывает РАМУ'),
+            fmt.text('дота - опрос, идет ли кто в доту'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -34,7 +35,15 @@ async def help(message: types.Message):
 @dp.message_handler(commands='кости')
 async def cmd_dice(message: types.Message):
     await message.answer_dice(emoji="🎲")
-   
+
+
+@dp.message_handler(commands='дота')
+async def dota_poll(message: types.Message):
+    await message.answer_poll(question='В доту идем?',
+                            options=['Да', 'Нет'],
+                            correct_option_id=1,
+                            is_anonymous=False)
+
  
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
@@ -50,8 +59,8 @@ async def go_home(message: types.Message):
 @dp.message_handler(commands='время')
 async def get_time(message: types.Message):
     print(message.chat)
-    first_name = str(message.chat.first_name)
-    username = str(message.chat.username)
+    first_name = str(message.from_user.first_name)
+    username = str(message.from_user.username)
     
     diff_working_hours = get_diff_working_hours(username)
     answer_message = f'{first_name}, {diff_working_hours}'
