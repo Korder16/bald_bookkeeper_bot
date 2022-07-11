@@ -1,5 +1,6 @@
 import logging
 from aiogram import Bot, Dispatcher, executor, types
+import aiogram.utils.markdown as fmt
 from os import getenv
 from bookkeeper import is_rashid_relaxing, get_diff_working_hours
 
@@ -17,6 +18,18 @@ dp = Dispatcher(bot)
 
 logging.basicConfig(level=logging.INFO)
 
+
+@dp.message_handler(commands='help')
+async def help(message: types.Message):
+    await message.answer(
+        fmt.text(
+            fmt.text('Список доступных комманд: '),
+            fmt.text('время - показывает, сколько времени осталось до конца рабочего дня;'),
+            fmt.text('кости - подбрасывает игральные кости;'),
+            fmt.text('рама - показывает РАМУ'),
+            sep='\n'
+        ), parse_mode='HTML'
+    )
 
 @dp.message_handler(commands='кости')
 async def cmd_dice(message: types.Message):
@@ -43,7 +56,6 @@ async def get_time(message: types.Message):
     diff_working_hours = get_diff_working_hours(username)
     answer_message = f'{first_name}, {diff_working_hours}'
     if username != 'rash708':
-        # if 'отд' not in diff_working_hours:
         if not is_rashid_relaxing():
             answer_message += f"\nА вот Рашиду {get_diff_working_hours('rash708')}"
         else:
