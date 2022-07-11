@@ -35,15 +35,13 @@ async def help(message: types.Message):
 @dp.message_handler(commands='кости')
 async def cmd_dice(message: types.Message):
     await message.answer_dice(emoji="🎲")
-
-
-@dp.message_handler(commands='дота')
-async def dota_poll(message: types.Message):
-    await message.answer_poll(question='В доту идем?',
-                            options=['Да', 'Нет'],
-                            correct_option_id=1,
+    
+@dp.message_handler(commands='куда')
+async def sigame_poll(message: types.Message):
+    await message.answer_poll(question='Куда идем?',
+                            options=['Дота', 'Своя', 'Нахуй'],
+                            allows_multiple_answers=True,
                             is_anonymous=False)
-
  
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
