@@ -1,84 +1,55 @@
-from email.mime import application
 import logging
-from datetime import datetime
-from datetime import time
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CallbackContext, CommandHandler, MessageHandler, JobQueue
-import os
+from aiogram import Bot, Dispatcher, executor, types
+from os import getenv
+from bookkeeper import is_rashid_relaxing, get_diff_working_hours
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
+bot_token = getenv("BALD_BOOKKEEPER_BOT_TOKEN")
+if not bot_token:
+    exit('Error: no token provided')
 
-def get_diff_working_hours(username: str):
-    
-    stop_working = {
-        'islamtramov': 18,
-        'TikhonovD': 18,
-        'rash708': 18,
-        'NSIbragim': 19,
-        'misha1234555': 19
-    }
-    
-    
-    if username == 'NikoGasanov':
-        message = 'отдохни от доты, брат, не сегодня'
-    else:
-        now = datetime.now()
-        stop = datetime.now().replace(hour=stop_working[username], minute=0, second=0)
-        if now.time() < time(stop_working[username] - 9, 00, 00) or now.time() > time(stop_working[username], 00, 00):
-            message = 'леее, куда прёшь, пора отдыхать'
-        else:
-            diff = stop - now
-            diff_without_ms = str(diff).split(".")[0]
-            message = f'до конца рабочего дня осталось: {diff_without_ms}'
-    return message
+bot = Bot(token=bot_token)
+dp = Dispatcher(bot)
+
+logging.basicConfig(level=logging.INFO)
 
 
-def is_rashid_relaxing():
-    now = datetime.now().time()
-    return (now < time(9, 00, 00) or now > time(18, 00, 00))
+@dp.message_handler(commands='кости')
+async def cmd_dice(message: types.Message):
+    await message.answer_dice(emoji="🎲")
+   
+ 
+@dp.message_handler(commands='рама')
+async def show_rama(message: types.Message):
+    photo = open('media/rama.jpg', 'rb')
+    await message.answer_photo(photo)
 
 
-async def end_of_work(context: CallbackContext):
-    await context.bot.send_message(chat_id=context.job.chat_id, text='А Рашид закончил)))')
+@dp.message_handler(commands='домой')
+async def go_home(message: types.Message):
+    await message.answer_sticker('CAACAgIAAxkBAAEFPvNizFgQ9nKuLwGp_kaDdp9DI2VpLgACERQAAqAAAehLhynfNnamXaEpBA')
 
 
-async def daily_job(update: Update, context: CallbackContext):
-    # TODO: fix actual time - 3 hours time zone
-    end_time = time(15, 00, 00)
-    await context.job_queue.run_daily(end_of_work, end_time, days=tuple(range(5)), chat_id=update.message.chat_id)
-
-
-async def start(update: Update, context: CallbackContext):
-    start_text = f'Привет, я лысый счетовод. Я подсказываю, сколько часов осталось до конца рабочего дня (команда /hours).'
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=start_text)
-    
-
-async def get_working_hours_remaining(update: Update, context: CallbackContext):
-    username, first_name = update.message.from_user['username'], update.message.from_user['first_name']
-    print(update.message.from_user)
+@dp.message_handler(commands='время')
+async def get_time(message: types.Message):
+    print(message.chat)
+    first_name = str(message.chat.first_name)
+    username = str(message.chat.username)
     
     diff_working_hours = get_diff_working_hours(username)
-    message = f'{first_name}, {diff_working_hours}'
-    
+    answer_message = f'{first_name}, {diff_working_hours}'
     if username != 'rash708':
         # if 'отд' not in diff_working_hours:
         if not is_rashid_relaxing():
-            message += f"\nА вот Рашиду {get_diff_working_hours('rash708')}"
+            answer_message += f"\nА вот Рашиду {get_diff_working_hours('rash708')}"
         else:
-            message += '\nА вот Рашид уже отдыхает)'
+            answer_message += '\nА вот Рашид уже отдыхает)'
         
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
-
-if __name__ == '__main__':
-    application = ApplicationBuilder().token(os.environ["BALD_BOOKKEEPER_BOT_TOKEN"]).build()
-
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('time', get_working_hours_remaining))
-    application.add_handler(CommandHandler('notify', daily_job))
-
-    application.run_polling()
+    await message.answer(answer_message)
+    
+if __name__ == "__main__":
+    executor.start_polling(dp, skip_updates=True)
