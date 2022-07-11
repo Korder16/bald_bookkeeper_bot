@@ -2,7 +2,7 @@ import logging
 from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
-from bookkeeper import is_rashid_relaxing, get_diff_working_hours
+from bookkeeper import get_working_hours_info, is_rashid_relaxing
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -56,18 +56,12 @@ async def go_home(message: types.Message):
 
 @dp.message_handler(commands='время')
 async def get_time(message: types.Message):
-    print(message.chat)
+    print(message.from_user)
     first_name = str(message.from_user.first_name)
     username = str(message.from_user.username)
     
-    diff_working_hours = get_diff_working_hours(username)
-    answer_message = f'{first_name}, {diff_working_hours}'
-    if username != 'rash708':
-        if not is_rashid_relaxing():
-            answer_message += f"\nА вот Рашиду {get_diff_working_hours('rash708')}"
-        else:
-            answer_message += '\nА вот Рашид уже отдыхает)'
-        
+    answer_message = f'{first_name}, {get_working_hours_info(username)}'
+   
     await message.answer(answer_message)
     
 if __name__ == "__main__":
