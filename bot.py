@@ -45,7 +45,8 @@ async def sigame_poll(message: types.Message):
  
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    await message.answer_photo('AgACAgIAAxkBAAEBLQxizXrXtNT-C489wcfGXzeqUWYIUAAC8bwxG8fraUqsy6WcC7giqwEAAwIAA20AAykE')
+    photo = open('media/rama.jpg', 'rb')
+    await message.answer_photo(photo)
 
 
 @dp.message_handler(commands='домой')
