@@ -54,6 +54,11 @@ async def go_home(message: types.Message):
     await message.answer_sticker('CAACAgIAAxkBAAEFPvNizFgQ9nKuLwGp_kaDdp9DI2VpLgACERQAAqAAAehLhynfNnamXaEpBA')
 
 
+@dp.message_handler(commands='получка')
+async def go_home(message: types.Message):
+    await message.answer_sticker('CAACAgIAAxkBAAEBLThizZnIHTLfN24LodNlBXYilqcoNQAC-w8AArGreUvmmZ8F9DW_NSkE')
+
+
 @dp.message_handler(commands='время')
 async def get_time(message: types.Message):
     print(message.from_user)
