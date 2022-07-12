@@ -33,16 +33,21 @@ async def help(message: types.Message):
         ), parse_mode='HTML'
     )
 
+
 @dp.message_handler(commands='кости')
 async def cmd_dice(message: types.Message):
     await message.answer_dice(emoji="🎲")
-    
+   
+ 
 @dp.message_handler(commands='куда')
 async def sigame_poll(message: types.Message):
-    await message.answer_poll(question='Куда идем?',
-                            options=['Дота', 'Своя', 'Нахуй'],
-                            allows_multiple_answers=True,
-                            is_anonymous=False)
+    msg = await message.answer_poll(question='Куда идем?',
+                              options=['Дота', 'Своя', 'Нахуй'],
+                              allows_multiple_answers=True,
+                              is_anonymous=False)
+    
+    await bot.pin_chat_message(message.chat.id, msg['message_id'], disable_notification=False)
+
  
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
