@@ -1,0 +1,4 @@
+aiohttp==3.8.1
+aiogram==2.21
+python-dotenv==0.20.0
+flake8==5.0.4
