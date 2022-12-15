@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_working_hours_info, get_last_game_statistics
+from src import get_working_hours_info, get_last_match_results
 
 
 logging.basicConfig(
@@ -83,14 +83,16 @@ async def salary(message: types.Message):
 @dp.message_handler(commands='стата')
 async def last_game(message: types.Message):
     username = str(message.from_user.username)
-    stat = await get_last_game_statistics(username)
-    await message.answer(stat)
+    match_info_image_bytes = await get_last_match_results(username)
+    
+    await message.answer_photo(match_info_image_bytes)
 
 
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
-    stat = await get_last_game_statistics('NikoGasanov')
-    await message.answer(stat)
+    match_info_image_bytes = await get_last_match_results('NikoGasanov')
+    
+    await message.answer_photo(match_info_image_bytes)
 
 
 @dp.message_handler(commands='время')
@@ -100,7 +102,6 @@ async def get_time(message: types.Message):
     username = str(message.from_user.username)
 
     answer_message = f'{first_name}, {get_working_hours_info(username)}'
-
     await message.answer(answer_message)
 
 
