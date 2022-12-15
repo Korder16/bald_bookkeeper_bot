@@ -8,11 +8,11 @@ from .dota_io_client import get_last_match_json, update_player_matches
 
 def parse_last_match(last_match: json, username: str):
     players = last_match['players']
-    
+
     for player in players:
         if player['account_id'] == users_dota_id[username]:
             current_player = player
-    
+
     current_player_info = make_player_info(
         current_player['name'] or username,
         current_player['hero_id'],
@@ -39,7 +39,7 @@ def parse_last_match(last_match: json, username: str):
         current_player['xp_per_min'],
         current_player['isRadiant']
     )
-    
+
     return make_match_info(
         last_match['match_id'],
         [current_player_info],
@@ -51,12 +51,13 @@ def parse_last_match(last_match: json, username: str):
         last_match['radiant_score']
     )
 
+
 async def get_last_match_results(username: str):
     await update_player_matches(username)
     last_match = await get_last_match_json(username)
-    
+
     match_info = parse_last_match(last_match, username)
-    
+
     match_info_image = generate_last_match_info_picture(match_info)
     img_byte_arr = io.BytesIO()
     match_info_image.save(img_byte_arr, format='webp')

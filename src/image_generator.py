@@ -22,7 +22,7 @@ with open('heroes_ids.json') as f:
 
 with open('item_ids.json') as f:
     item_icons_data = json.load(f)
-    
+
 with open('game_mode.json') as f:
     game_mode_data = json.load(f)
 
@@ -34,7 +34,7 @@ def get_hero_icon_path_by_id(hero_id: int):
 def get_item_icon_path_by_item_id(item_id: int):
     item_name = item_icons_data[str(item_id)]
     if 'recipe' in item_name:
-        return f'media/item_icons/recipe.webp'
+        return 'media/item_icons/recipe.webp'
     else:
         return f'media/item_icons/{item_name}.webp'
 
@@ -77,7 +77,6 @@ def generate_match_info_template():
     idraw.text((800, title_text_height + 20), 'ДЛИТЕЛЬНОСТЬ', GREY_TEXT_COLOR, NORMAL_FONT)
     idraw.text((1000, title_text_height + 20), 'ДАТА', GREY_TEXT_COLOR, NORMAL_FONT)
 
-    
     idraw.text((10, text_height), 'Герой', WHITE_TEXT_COLOR, NORMAL_FONT)
     idraw.text((80, text_height), 'Игрок', WHITE_TEXT_COLOR, NORMAL_FONT)
     idraw.text((380, text_height), ' У', WHITE_TEXT_COLOR, NORMAL_FONT)
@@ -107,10 +106,10 @@ def generate_last_match_info_picture(m_info: match_info):
     idraw.text((480, title_text_height), 'Рейтинговый', WHITE_TEXT_COLOR, NORMAL_FONT)
     idraw.text((610, title_text_height), get_game_mode_by_id(m_info.game_mode_id), WHITE_TEXT_COLOR, NORMAL_FONT)
     idraw.text((720, title_text_height), 'Россия', WHITE_TEXT_COLOR, NORMAL_FONT)
-    
+
     duration = strftime('%H:%M:%S', gmtime(m_info.duration)).lstrip('0:')
     idraw.text((800, title_text_height), duration, WHITE_TEXT_COLOR, NORMAL_FONT)
-    
+
     pretty_start_time = datetime.fromtimestamp(m_info.start_time, tz=None).strftime("%d.%m.%Y, %H:%M:%S")
     idraw.text((940, title_text_height), pretty_start_time, WHITE_TEXT_COLOR, NORMAL_FONT)
 
@@ -124,7 +123,7 @@ def generate_last_match_info_picture(m_info: match_info):
 
     text_height = 160
     idraw.text((10, text_height - 60), f'СИЛЫ {team}', team_color, TITLE_FONT)
-    
+
     for player in m_info.players:
         hero_icon = Image.open(get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
         idraw.text((80, text_height), player.nickname, WHITE_TEXT_COLOR, NORMAL_FONT)
@@ -139,7 +138,7 @@ def generate_last_match_info_picture(m_info: match_info):
         idraw.text((677, text_height), f'{num_to_k(player.hero_damage)}K', GREY_TEXT_COLOR, NORMAL_FONT)
         idraw.text((770, text_height), f'{num_to_k(player.hero_heal)}K', GREY_TEXT_COLOR, NORMAL_FONT)
         idraw.text((835, text_height), f'{num_to_k(player.tower_damage)}', GREY_TEXT_COLOR, NORMAL_FONT)
-        
+
         item_indent = 0
         for item_id in player.items:
             if item_id != 0:
@@ -150,6 +149,6 @@ def generate_last_match_info_picture(m_info: match_info):
         if player.neutral_item_id != 0:
             neutral_item_icon = Image.open(get_item_icon_path_by_item_id(player.neutral_item_id)).resize((38, 28))
             template_image.paste(neutral_item_icon, (950 + item_indent, text_height))
-        
+
     template_image.paste(hero_icon, (10, text_height))
     return template_image

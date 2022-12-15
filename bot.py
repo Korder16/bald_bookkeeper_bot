@@ -84,14 +84,14 @@ async def salary(message: types.Message):
 async def last_game(message: types.Message):
     username = str(message.from_user.username)
     match_info_image_bytes = await get_last_match_results(username)
-    
+
     await message.answer_photo(match_info_image_bytes)
 
 
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
     match_info_image_bytes = await get_last_match_results('NikoGasanov')
-    
+
     await message.answer_photo(match_info_image_bytes)
 
 

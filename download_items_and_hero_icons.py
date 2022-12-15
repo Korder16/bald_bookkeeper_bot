@@ -3,16 +3,17 @@ import requests
 from pathlib import Path
 from PIL import Image
 
+
 def download_icon(url: str, path: str):
     response = requests.get(url, stream=True).raw
-    
+
     img = Image.open(response)
     img.save(path, format='webp')
 
 
 def download_item_icon(item_name: str):
     if 'recipe' in item_name:
-        image_url = f'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/recipe.png'
+        image_url = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/recipe.png'
     else:
         image_url = f'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/{item_name}.png'
 
@@ -31,7 +32,7 @@ def download_item_icons():
     path = 'media/item_icons'
     if not Path(path).exists():
         Path.mkdir(path)
-    
+
     with open('item_ids.json') as f:
         data = json.load(f)
 
@@ -39,11 +40,12 @@ def download_item_icons():
         download_item_icon(value)
         print(f'{value} icon downloaded')
 
+
 def download_hero_icons():
     path = 'media/hero_icons'
     if not Path(path).exists():
         Path.mkdir(path)
-    
+
     with open('heroes.json') as f:
         data = json.load(f)
 
