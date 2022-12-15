@@ -2,7 +2,7 @@ import json
 import requests
 from pathlib import Path
 from PIL import Image
-
+from collections import deque
 
 def download_icon(url: str, path: str):
     response = requests.get(url, stream=True).raw
@@ -28,33 +28,18 @@ def download_hero_icon(hero_name: str):
     download_icon(image_url, path)
 
 
-def download_item_icons():
-    path = 'media/item_icons'
+def download_icons(path: str, json_ids: str, func):
     if not Path(path).exists():
         Path.mkdir(path)
 
-    with open('item_ids.json') as f:
+    with open(json_ids) as f:
         data = json.load(f)
 
-    for value in data.values():
-        download_item_icon(value)
-        print(f'{value} icon downloaded')
-
-
-def download_hero_icons():
-    path = 'media/hero_icons'
-    if not Path(path).exists():
-        Path.mkdir(path)
-
-    with open('heroes.json') as f:
-        data = json.load(f)
-
-    for value in data.values():
-        hero_name = value['name']
-        download_hero_icon(hero_name)
-        print(f'{hero_name} icon downloaded')
-
+    deque(map(func, data.values()))
+    print(f'{path} icons downloaded')
 
 if __name__ == '__main__':
-    download_hero_icons()
-    download_item_icons()
+    if not Path('media').exists():
+        Path.mkdir('media')
+    download_icons('media/hero_icons', 'heroes_ids.json', download_hero_icon)
+    download_icons('media/item_icons', 'item_ids.json', download_item_icon)
