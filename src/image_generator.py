@@ -13,8 +13,8 @@ LIGHT_BLUE_TEXT_COLOR = '#30BFD2'
 GREEN_TEXT_COLOR = '#92A525'
 RED_TEXT_COLOR = '#C23C2A'
 
-NORMAL_FONT = ImageFont.truetype('/usr/share/fonts/liberation-mono/LiberationMono-BoldItalic.ttf', size=16, encoding="unic")
-TITLE_FONT = ImageFont.truetype('/usr/share/fonts/liberation-mono/LiberationMono-BoldItalic.ttf', size=20, encoding="unic")
+NORMAL_FONT = ImageFont.truetype('fonts/LiberationMono-BoldItalic.ttf', size=16, encoding="unic")
+TITLE_FONT = ImageFont.truetype('fonts/LiberationMono-BoldItalic.ttf', size=20, encoding="unic")
 
 # TODO: refactor this block
 with open('heroes_ids.json') as f:
