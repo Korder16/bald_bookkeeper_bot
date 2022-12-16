@@ -4,6 +4,7 @@ from pathlib import Path
 from PIL import Image
 from collections import deque
 
+
 def download_icon(url: str, path: str):
     response = requests.get(url, stream=True).raw
 
@@ -38,8 +39,10 @@ def download_icons(path: str, json_ids: str, func):
     deque(map(func, data.values()))
     print(f'{path} icons downloaded')
 
+
 if __name__ == '__main__':
     if not Path('media').exists():
         Path.mkdir('media')
+
     download_icons('media/hero_icons', 'heroes_ids.json', download_hero_icon)
     download_icons('media/item_icons', 'item_ids.json', download_item_icon)
