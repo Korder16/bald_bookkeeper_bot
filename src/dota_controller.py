@@ -2,7 +2,7 @@ import json
 import io
 
 from .dota_models import users_dota_id, make_match_info, make_player_info
-from .image_generator import generate_last_match_info_picture
+from .image_generator import image_generator, image_generator_settings, dota_objects_parser
 from .dota_io_client import get_last_match_json, update_player_matches
 
 
@@ -58,7 +58,11 @@ async def get_last_match_results(username: str):
 
     match_info = parse_last_match(last_match, username)
 
-    match_info_image = generate_last_match_info_picture(match_info)
+    settings = image_generator_settings()
+    parser = dota_objects_parser('heroes_ids.json', 'item_ids.json', 'game_mode.json')
+    generator = image_generator(settings, parser)
+
+    match_info_image = generator.generate_last_match_info_picture(match_info)
     img_byte_arr = io.BytesIO()
     match_info_image.save(img_byte_arr, format='webp')
     return img_byte_arr.getvalue()
