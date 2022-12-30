@@ -4,7 +4,7 @@ import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
 from src import get_working_hours_info, get_last_match_results
-
+import random
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -32,6 +32,7 @@ async def help(message: types.Message):
             fmt.text('кости - подбрасывает игральные кости;'),
             fmt.text('рама - показывает раму;'),
             fmt.text('клоун - показывает клоуна;'),
+            fmt.text('дура - показывает дуру;'),
             fmt.text('стата - показывает результаты твоей последней игры;'),
             fmt.text('не_сегодня - показывает дату последней рейтинговой игры Нико;'),
             fmt.text('куда - опрос, куда идем играть;'),
@@ -60,13 +61,20 @@ async def sigame_poll(message: types.Message):
 
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    photo = open('media/rama.jpg', 'rb')
+    photo = open('media/rama.webp', 'rb')
     await message.answer_photo(photo)
 
 
-@dp.message_handler(commands=['клоун', 'дура'])
+@dp.message_handler(commands='клоун')
 async def show_clown(message: types.Message):
-    photo = open('media/clown.jpg', 'rb')
+    photo = open('media/clown.webp', 'rb')
+    await message.answer_photo(photo)
+
+
+@dp.message_handler(commands='дура')
+async def show_dura(message: types.Message):
+    dura_images = ['media/clown.webp', 'media/dura.webp']
+    photo = open(random.choice(dura_images), 'rb')
     await message.answer_photo(photo)
 
 
