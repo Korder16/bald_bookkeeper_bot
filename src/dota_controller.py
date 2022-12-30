@@ -3,7 +3,7 @@ import io
 
 from .dota_models import users_dota_id, make_match_info, make_player_info
 from .image_generator import image_generator, image_generator_settings, dota_objects_parser
-from .dota_io_client import get_last_match_json, update_player_matches
+from .dota_io_client import get_last_match_json
 
 
 def parse_last_match(last_match: json, username: str):
@@ -53,7 +53,6 @@ def parse_last_match(last_match: json, username: str):
 
 
 async def get_last_match_results(username: str):
-    await update_player_matches(username)
     last_match = await get_last_match_json(username)
 
     match_info = parse_last_match(last_match, username)
