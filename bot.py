@@ -64,7 +64,7 @@ async def show_rama(message: types.Message):
     await message.answer_photo(photo)
 
 
-@dp.message_handler(commands='клоун')
+@dp.message_handler(commands=['клоун', 'дура'])
 async def show_clown(message: types.Message):
     photo = open('media/clown.jpg', 'rb')
     await message.answer_photo(photo)
