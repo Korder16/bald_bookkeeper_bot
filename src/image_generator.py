@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from time import strftime, gmtime
 from dataclasses import dataclass
-
+from random import choice
 
 def num_to_k(num: int):
     if num > 1000:
@@ -60,10 +60,15 @@ class image_generator:
         self.__parser = parser
 
     def get_match_results(self, radiant_win: bool):
+        victory_messages = ['разнёс бомжей', 'засолил', '2ez', 'в сола']
+        defeat_messages = ['отлетел очередняра', 'заруинили', 'за тупость']
+        
         if radiant_win:
-            return 'ПОБЕДА СИЛ СВЕТА', self.__settings.green_text_color
+            result_message = choice(victory_messages)
+            return result_message, self.__settings.green_text_color
         else:
-            return 'ПОБЕДА СИЛ ТЬМЫ', self.__settings.red_text_color
+            result_message = choice(defeat_messages)
+            return result_message, self.__settings.red_text_color
 
     def get_team(self, team: bool):
         if team:
@@ -120,7 +125,7 @@ class image_generator:
         idraw.text((940, title_text_height), pretty_start_time, self.__settings.white_text_color, self.__settings.normal_font)
 
         result, result_color = self.get_match_results(m_info.radiant_win)
-        idraw.text((520, title_text_height + 50), result, result_color, self.__settings.title_font)
+        idraw.text((540, title_text_height + 50), result, result_color, self.__settings.title_font)
         idraw.text((530, title_text_height + 80), f'{m_info.radiant_score}', self.__settings.green_text_color, self.__settings.title_font)
         idraw.text((590, title_text_height + 80), duration, self.__settings.white_text_color, self.__settings.title_font)
         idraw.text((670, title_text_height + 80), f'{m_info.dire_score}', self.__settings.red_text_color, self.__settings.title_font)
