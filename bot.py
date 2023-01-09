@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_working_hours_info, get_last_match_results
+from src import get_working_hours_info, get_last_match_results, parse_user_config
 import random
 
 logging.basicConfig(
@@ -109,4 +109,5 @@ async def get_time(message: types.Message):
 
 
 if __name__ == "__main__":
+    parse_user_config()
     executor.start_polling(dp, skip_updates=True)

@@ -1,12 +1,5 @@
 from dataclasses import dataclass
 from typing import List
-import json
-
-with open('user_infos.json', 'r') as f:
-    user_infos = json.load(f)
-    user_dota_ids = {}
-    for user_id, user_value in user_infos.items():
-        user_dota_ids[user_id] = user_value['dota_id']
 
 
 @dataclass
