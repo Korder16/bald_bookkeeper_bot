@@ -1,19 +1,18 @@
 import json
 import io
 
-from .dota_models import users_dota_id, make_match_info, make_player_info
+from .dota_models import user_dota_ids, match_info, player_info
 from .image_generator import image_generator, image_generator_settings, dota_objects_parser
-from .dota_api_client import get_last_match_json
-
+from .dota_api_client import get_last_match_json, get_allies_statistics_json
 
 def parse_last_match(last_match: json, username: str):
     players = last_match['players']
 
     for player in players:
-        if player['account_id'] == users_dota_id[username]:
+        if player['account_id'] == user_dota_ids[username]:
             current_player = player
 
-    current_player_info = make_player_info(
+    current_player_info = player_info(
         current_player['name'] or username,
         current_player['hero_id'],
         current_player['level'],
@@ -40,7 +39,7 @@ def parse_last_match(last_match: json, username: str):
         current_player['isRadiant']
     )
 
-    return make_match_info(
+    return match_info(
         last_match['match_id'],
         [current_player_info],
         last_match['start_time'],
@@ -52,10 +51,10 @@ def parse_last_match(last_match: json, username: str):
     )
 
 
-async def get_last_match_results(username: str):
-    last_match = await get_last_match_json(username)
+async def get_last_match_results(user_id: str):
+    last_match = await get_last_match_json(user_id)
 
-    match_info = parse_last_match(last_match, username)
+    match_info = parse_last_match(last_match, user_id)
 
     settings = image_generator_settings()
     parser = dota_objects_parser('heroes_ids.json', 'item_ids.json', 'game_mode.json')
@@ -65,3 +64,22 @@ async def get_last_match_results(username: str):
     img_byte_arr = io.BytesIO()
     match_info_image.save(img_byte_arr, format='webp')
     return img_byte_arr.getvalue()
+
+
+def parse_allies_statistics(user_id: str, statistics: json):
+    
+    filtered_statistics = list(filter(lambda stat: stat['account_id'] in user_dota_ids.values(), statistics))
+    
+    parsed_data = [f'Кенты {user_id}: ']
+    for stat in filtered_statistics:
+        nickname = stat['personaname']
+        games = stat['games']
+        wins = stat['win']
+        loses = games - wins
+        parsed_data.append(f'{nickname}: {games} игр ({wins - loses})')
+    return '\n'.join(parsed_data)
+    
+
+async def get_allies_statistics(user_id: str):
+    allies_statistics = await get_allies_statistics_json(user_id)
+    return parse_allies_statistics(user_id, allies_statistics)

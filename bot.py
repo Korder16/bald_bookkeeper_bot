@@ -90,8 +90,8 @@ async def salary(message: types.Message):
 
 @dp.message_handler(commands='стата')
 async def last_game(message: types.Message):
-    username = str(message.from_user.username)
-    match_info_image_bytes = await get_last_match_results(username)
+    user_id = str(message.from_user.id)
+    match_info_image_bytes = await get_last_match_results(user_id)
 
     await message.answer_photo(match_info_image_bytes)
 
@@ -99,18 +99,13 @@ async def last_game(message: types.Message):
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
     match_info_image_bytes = await get_last_match_results('NikoGasanov')
-
     await message.answer_photo(match_info_image_bytes)
 
 
 @dp.message_handler(commands='время')
 async def get_time(message: types.Message):
-    print(message.from_user)
-    first_name = str(message.from_user.first_name)
-    username = str(message.from_user.username)
-
-    answer_message = f'{first_name}, {get_working_hours_info(username)}'
-    await message.answer(answer_message)
+    user_id = str(message.from_user.id)
+    await message.answer(get_working_hours_info(user_id))
 
 
 if __name__ == "__main__":
