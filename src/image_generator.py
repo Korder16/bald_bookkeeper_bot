@@ -59,11 +59,11 @@ class image_generator:
         self.__settings = settings
         self.__parser = parser
 
-    def get_match_results(self, radiant_win: bool):
+    def get_match_results(self, radiant_win: bool, team: bool):
         victory_messages = ['разнёс бомжей', 'засолил', '2ez', 'в сола']
         defeat_messages = ['отлетел очередняра', 'заруинили', 'за тупость']
         
-        if radiant_win:
+        if (radiant_win and team) or (not radiant_win and not team):
             result_message = choice(victory_messages)
             return result_message, self.__settings.green_text_color
         else:
@@ -124,7 +124,7 @@ class image_generator:
         pretty_start_time = datetime.fromtimestamp(m_info.start_time, tz=None).strftime("%d.%m.%Y, %H:%M:%S")
         idraw.text((940, title_text_height), pretty_start_time, self.__settings.white_text_color, self.__settings.normal_font)
 
-        result, result_color = self.get_match_results(m_info.radiant_win)
+        result, result_color = self.get_match_results(m_info.radiant_win, m_info.players[0].team)
         idraw.text((540, title_text_height + 50), result, result_color, self.__settings.title_font)
         idraw.text((530, title_text_height + 80), f'{m_info.radiant_score}', self.__settings.green_text_color, self.__settings.title_font)
         idraw.text((590, title_text_height + 80), duration, self.__settings.white_text_color, self.__settings.title_font)
