@@ -105,11 +105,11 @@ class image_generator:
 
         idraw.text((945, text_height), 'Предметы', self.__settings.white_text_color, self.__settings.normal_font)
 
-        img.save('template.webp')
+        img.save('media/template.webp')
 
     def generate_last_match_info_picture(self, m_info: match_info):
         self.generate_match_info_template()
-        template_image = Image.open('template.webp')
+        template_image = Image.open('media/template.webp')
         idraw = ImageDraw.Draw(template_image)
 
         title_text_height = 5

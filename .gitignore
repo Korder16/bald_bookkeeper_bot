@@ -1,6 +1,5 @@
 media
 .env
 __pycache__
-template.webp
 fonts
 user_infos.json
