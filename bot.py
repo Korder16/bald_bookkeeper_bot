@@ -98,7 +98,7 @@ async def last_game(message: types.Message):
 
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
-    match_info_image_bytes = await get_last_match_results('NikoGasanov')
+    match_info_image_bytes = await get_last_match_results('234173758')
     await message.answer_photo(match_info_image_bytes)
 
 
