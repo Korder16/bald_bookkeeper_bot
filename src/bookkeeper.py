@@ -1,16 +1,19 @@
 from datetime import datetime, time
+from pytz import timezone
 import random
 from .user_infos import user_infos
 
 def is_now_working_time(end_of_work: int):
-    now = datetime.now().time()
+    tz = timezone('Europe/Moscow')
+    now = datetime.now(tz).time()
     return now < time(end_of_work, 00, 00) and now > time(end_of_work - 9, 00, 00)
 
 
 def get_diff_working_hours(user_id: int):
     if user_id in user_infos:
-        now = datetime.now()
-        stop = datetime.now().replace(hour=user_infos[user_id].stop_working_hour, minute=0, second=0)
+        tz = timezone('Europe/Moscow')
+        now = datetime.now(tz)
+        stop = datetime.now(tz).replace(hour=user_infos[user_id].stop_working_hour, minute=0, second=0)
 
         if not is_now_working_time(user_infos[user_id].stop_working_hour):
             message = 'леее, куда прёшь, пора отдыхать'
