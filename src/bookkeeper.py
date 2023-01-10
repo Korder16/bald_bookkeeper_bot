@@ -3,6 +3,7 @@ from pytz import timezone
 import random
 from .user_infos import user_infos
 
+
 def is_now_working_time(end_of_work: int):
     tz = timezone('Europe/Moscow')
     now = datetime.now(tz).time()

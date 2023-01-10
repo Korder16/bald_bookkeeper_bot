@@ -6,6 +6,7 @@ from time import strftime, gmtime
 from dataclasses import dataclass
 from random import choice
 
+
 def num_to_k(num: int):
     if num > 1000:
         return round(num / 1000, 1)
@@ -62,7 +63,7 @@ class image_generator:
     def get_match_results(self, radiant_win: bool, team: bool):
         victory_messages = ['разнёс бомжей', 'засолил', '2ez', 'в сола']
         defeat_messages = ['отлетел очередняра', 'заруинили', 'за тупость']
-        
+
         if (radiant_win and team) or (not radiant_win and not team):
             result_message = choice(victory_messages)
             return result_message, self.__settings.green_text_color

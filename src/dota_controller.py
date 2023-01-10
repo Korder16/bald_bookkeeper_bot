@@ -6,6 +6,7 @@ from .image_generator import image_generator, image_generator_settings, dota_obj
 from .dota_api_client import get_last_match_json
 from .user_infos import user_infos
 
+
 def parse_last_match(last_match: json, user_id: str):
     players = last_match['players']
 

@@ -22,6 +22,7 @@ class player_info:
     xpm: int
     team: bool
 
+
 @dataclass
 class match_info:
     id: int
