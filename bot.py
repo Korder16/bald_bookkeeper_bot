@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_working_hours_info, get_last_match_results, parse_user_config
+from src import get_working_hours_info, get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks
 import random
 
 logging.basicConfig(
@@ -37,6 +37,7 @@ async def help(message: types.Message):
             fmt.text('не_сегодня - показывает дату последней рейтинговой игры Нико;'),
             fmt.text('куда - опрос, куда идем играть;'),
             fmt.text('получка - стикер с получкой.'),
+            fmt.text('кенты - винрейт с кентами за последние 2 недели.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -106,6 +107,13 @@ async def not_today(message: types.Message):
 async def get_time(message: types.Message):
     user_id = str(message.from_user.id)
     await message.answer(get_working_hours_info(user_id))
+
+
+@dp.message_handler(commands='кенты')
+async def teammates(message: types.Message):
+    user_id = str(message.from_user.id)
+    statistics = await get_allies_info_for_last_two_weeks(user_id)
+    await message.answer(statistics)
 
 
 if __name__ == "__main__":

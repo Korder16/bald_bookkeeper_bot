@@ -3,7 +3,7 @@ import io
 
 from .dota_models import match_info, player_info
 from .image_generator import image_generator, image_generator_settings, dota_objects_parser
-from .dota_api_client import get_last_match_json
+from .dota_api_client import get_last_match_json, get_allies_statistics_json
 from .user_infos import user_infos
 
 
@@ -66,3 +66,27 @@ async def get_last_match_results(user_id: str):
     img_byte_arr = io.BytesIO()
     match_info_image.save(img_byte_arr, format='webp')
     return img_byte_arr.getvalue()
+
+
+def parse_allies_statistics(user_id: str, statistics: json):
+
+    user_dota_ids = [stat['account_id'] for stat in statistics]
+    filtered_statistics = list(filter(lambda stat: stat['account_id'] in user_dota_ids, statistics))
+
+    parsed_data = [f'{user_infos[user_id].name}, твой винрейт с кентами за последние 2 недели: ']
+    for stat in filtered_statistics:
+        nickname = stat['personaname']
+        games = stat['games']
+        wins = stat['win']
+        loses = games - wins
+        result = wins - loses
+        result_str = f'{result}'
+        if result > 0:
+            result_str = f'+{result}'
+        parsed_data.append(f'{nickname}: {games} игр ({result_str})')
+    return '\n'.join(parsed_data)
+
+
+async def get_allies_info_for_last_two_weeks(user_id: str):
+    allies_statistics = await get_allies_statistics_json(user_id)
+    return parse_allies_statistics(user_id, allies_statistics)
