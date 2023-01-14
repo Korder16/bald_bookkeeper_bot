@@ -52,7 +52,7 @@ async def cmd_dice(message: types.Message):
 async def sigame_poll(message: types.Message):
     msg = await message.answer_poll(
         question='Куда идем?',
-        options=['Дота', 'Своя', 'На боковую'],
+        options=['Дота', 'Своя', 'На боковую', 'Посмотреть результаты'],
         allows_multiple_answers=True,
         is_anonymous=False
     )
