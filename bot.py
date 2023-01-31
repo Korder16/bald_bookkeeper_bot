@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_working_hours_info, get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks
+from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker
 import random
 
 logging.basicConfig(
@@ -28,7 +28,7 @@ async def help(message: types.Message):
     await message.answer(
         fmt.text(
             fmt.text('Список доступных комманд: '),
-            fmt.text('время - показывает, сколько времени осталось до конца рабочего дня;'),
+            fmt.text('время - показывает, сколько времени осталось до конца рабочего дня и рабочей недели;'),
             fmt.text('кости - подбрасывает игральные кости;'),
             fmt.text('рама - показывает раму;'),
             fmt.text('клоун - показывает клоуна;'),
@@ -103,17 +103,18 @@ async def not_today(message: types.Message):
     await message.answer_photo(match_info_image_bytes)
 
 
-@dp.message_handler(commands='время')
-async def get_time(message: types.Message):
-    user_id = str(message.from_user.id)
-    await message.answer(get_working_hours_info(user_id))
-
-
 @dp.message_handler(commands='кенты')
 async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
     statistics = await get_allies_info_for_last_two_weeks(user_id)
     await message.answer(statistics)
+
+
+@dp.message_handler(commands='время')
+async def get_time(message: types.Message):
+    user_id = str(message.from_user.id)
+    await message.answer(get_today_info_message(user_id))
+    await message.answer_sticker(get_mr_incredible_sticker())
 
 
 if __name__ == "__main__":

@@ -3,3 +3,4 @@ aiogram==2.21
 python-dotenv==0.20.0
 flake8==5.0.4
 Pillow==9.2.0
+emoji==2.2.0

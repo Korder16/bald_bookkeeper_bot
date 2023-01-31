@@ -1,61 +1,64 @@
-from datetime import datetime, time
-from pytz import timezone
-import random
 from .user_infos import user_infos
-
-
-def is_now_working_time(end_of_work: int):
-    tz = timezone('Europe/Moscow')
-    now = datetime.now(tz).time()
-    return now < time(end_of_work, 00, 00) and now > time(end_of_work - 9, 00, 00)
-
-
-def get_diff_working_hours(user_id: int):
-    if user_id in user_infos:
-        tz = timezone('Europe/Moscow')
-        now = datetime.now(tz)
-        stop = datetime.now(tz).replace(hour=user_infos[user_id].stop_working_hour, minute=0, second=0)
-
-        if not is_now_working_time(user_infos[user_id].stop_working_hour):
-            message = 'леее, куда прёшь, пора отдыхать'
-        else:
-            diff_hours = get_diff_hours(now, stop)
-            message = f'до конца рабочего дня осталось: {diff_hours}'
-        return message
-    else:
-        return ''
+from .datetime_utils import get_days_until_weekend, get_hours_until_end_of_work, is_now_working_time
+from .emoji_generator import get_emoji_number, get_warning_emoji, get_bang_emoji, get_beach_emoji
+from .stickers import get_mr_incredible_sticker_id
 
 
 def is_rashid_relaxing():
     return not is_now_working_time(18)
 
 
-def get_diff_hours(start, stop):
-    diff = stop - start
-    return str(diff).split(".")[0]
-
-
-def get_special_phrase(user_id: int):
-    special_phrases = {
-        234173758: ['отдохни от доты, брат, не сегодня'],
-        406351790: ['АШАЛЕТЬ']
-    }
-
-    if user_id in special_phrases:
-        return f'{random.choice(special_phrases[user_id])}\n'
-    else:
-        return ''
-
-
-def get_working_hours_info(user_id: str):
+def get_user_message(user_id: int):
     username = user_infos[user_id].name
-    message = f'{username}, '
-    message += get_special_phrase(user_id)
-    message += get_diff_working_hours(user_id)
+    warning_emoji = get_warning_emoji()
+    return f'{warning_emoji}{username}{warning_emoji}'
 
-    if username != 'Рашид':
-        if not is_rashid_relaxing():
-            message += f"\nА вот Рашиду {get_diff_working_hours('178513005')}"
-        else:
-            message += '\nА Рашид уже отдыхает)))'
+
+def get_hours_until_end_of_work_message(stop_working_hour: int):
+    hours_until_end_of_work = get_hours_until_end_of_work(stop_working_hour)
+    emoji_hours = get_emoji_number(hours_until_end_of_work)
+    bang_emoji = get_bang_emoji()
+
+    message = f'{bang_emoji}{emoji_hours}'
+    if (hours_until_end_of_work == 0) or (hours_until_end_of_work > 4):
+        message += ' часов '
+    elif hours_until_end_of_work == 1:
+        message += ' час '
+    elif (hours_until_end_of_work > 1) and (hours_until_end_of_work < 5):
+        message += ' часа '
+
+    message += f'и домой{bang_emoji}'
     return message
+
+
+def get_days_until_weekend_message():
+    beach_emoji = get_beach_emoji()
+    days_until_weekend = get_days_until_weekend()
+    emoji_days = get_emoji_number(days_until_weekend)
+
+    message = f'{beach_emoji}{emoji_days}'
+    if (days_until_weekend == 0) or (days_until_weekend > 4):
+        message += ' дней '
+    elif days_until_weekend == 1:
+        message += ' день '
+    elif (days_until_weekend > 1) and (days_until_weekend < 5):
+        message += ' дня '
+
+    message += f' и выходные{beach_emoji}'
+    return message
+
+
+def get_today_info_message(user_id: str):
+    stop_working_hour = user_infos[user_id].stop_working_hour
+    message_tokens = [
+        get_user_message(user_id),
+        get_hours_until_end_of_work_message(stop_working_hour),
+        get_days_until_weekend_message()
+    ]
+
+    return '\n'.join(message_tokens)
+
+
+def get_mr_incredible_sticker():
+    days = get_days_until_weekend()
+    return get_mr_incredible_sticker_id(days)
