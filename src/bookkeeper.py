@@ -44,7 +44,7 @@ def get_days_until_weekend_message():
     elif (days_until_weekend > 1) and (days_until_weekend < 5):
         message += ' дня '
 
-    message += f' и выходные{beach_emoji}'
+    message += f'и выходные{beach_emoji}'
     return message
 
 
