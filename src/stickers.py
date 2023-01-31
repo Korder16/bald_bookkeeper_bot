@@ -9,3 +9,11 @@ mr_incredible_stickers = {
 
 def get_mr_incredible_sticker_id(number_of_days: int):
     return mr_incredible_stickers[number_of_days]
+
+
+def get_pay_sticker_id():
+    return 'CAACAgIAAxkBAAEBLThizZnIHTLfN24LodNlBXYilqcoNQAC-w8AArGreUvmmZ8F9DW_NSkE'
+
+
+def get_go_home_sticker_id():
+    return 'CAACAgIAAxkBAAEFPvNizFgQ9nKuLwGp_kaDdp9DI2VpLgACERQAAqAAAehLhynfNnamXaEpBA'
