@@ -1,6 +1,6 @@
 import aiohttp
 import asyncio
-from .user_infos import user_infos
+from ..user_infos import user_infos
 
 
 async def update_last_match_info(session, user_id: str):

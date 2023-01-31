@@ -2,9 +2,9 @@ import json
 import io
 
 from .dota_models import match_info, player_info
-from .image_generator import image_generator, image_generator_settings, dota_objects_parser
+from ..image_generator import image_generator, image_generator_settings, dota_objects_parser
 from .dota_api_client import get_last_match_json, get_allies_statistics_json
-from .user_infos import user_infos
+from ..user_infos import user_infos
 
 
 def parse_last_match(last_match: json, user_id: str):
@@ -70,7 +70,7 @@ async def get_last_match_results(user_id: str):
 
 def parse_allies_statistics(user_id: str, statistics: json):
 
-    user_dota_ids = [stat['account_id'] for stat in statistics]
+    user_dota_ids = [user_info.dota_id for user_info in user_infos.values()]
     filtered_statistics = list(filter(lambda stat: stat['account_id'] in user_dota_ids, statistics))
 
     parsed_data = [f'{user_infos[user_id].name}, твой винрейт с кентами за последние 2 недели: ']
