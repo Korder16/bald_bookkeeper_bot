@@ -9,6 +9,7 @@ def get_timezone():
 def get_day_of_week():
     return datetime.now().weekday()
 
+
 def get_day_of_week_name():
     russian_weekdays = {
         0: 'понедельник',
