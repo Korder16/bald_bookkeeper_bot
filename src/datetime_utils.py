@@ -6,6 +6,9 @@ def get_timezone():
     return timezone('Europe/Moscow')
 
 
+def get_day_of_week():
+    return datetime.now().weekday()
+
 def get_day_of_week_name():
     russian_weekdays = {
         0: 'понедельник',
@@ -17,12 +20,12 @@ def get_day_of_week_name():
         6: 'воскресенье'
     }
 
-    weekday_index = datetime.now().weekday()
+    weekday_index = get_day_of_week()
     return russian_weekdays[weekday_index]
 
 
 def get_days_until_weekend():
-    current_day_of_week = datetime.now().weekday()
+    current_day_of_week = get_day_of_week()
     return 5 - current_day_of_week
 
 

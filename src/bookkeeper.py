@@ -1,5 +1,5 @@
 from .user_infos import user_infos
-from .datetime_utils import get_days_until_weekend, get_hours_until_end_of_work, is_now_working_time
+from .datetime_utils import get_day_of_week, get_days_until_weekend, get_hours_until_end_of_work, is_now_working_time
 from .emoji_generator import get_emoji_number, get_warning_emoji, get_bang_emoji, get_beach_emoji
 from .stickers import get_mr_incredible_sticker_id
 
@@ -63,5 +63,5 @@ def get_today_info_message(user_id: str):
 
 
 def get_mr_incredible_sticker():
-    days = get_days_until_weekend()
-    return get_mr_incredible_sticker_id(days)
+    today = get_day_of_week()
+    return get_mr_incredible_sticker_id(today)
