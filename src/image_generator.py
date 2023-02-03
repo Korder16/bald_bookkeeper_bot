@@ -210,8 +210,8 @@ class allies_statistics_image_generator:
         else:
             idraw.text((nickname_x + 220, text_height), f'{result}', self.__settings.text_color.red, self.__settings.font.normal)
 
-        winrate = ally.wins / ally.total_games
-        idraw.text((nickname_x + 300, text_height), f'{winrate:.2f}%', self.__settings.text_color.white, self.__settings.font.normal)
+        winrate = (ally.wins / ally.total_games) * 100
+        idraw.text((nickname_x + 300, text_height), f'{winrate:.1f}%', self.__settings.text_color.white, self.__settings.font.normal)
 
     def generate_allies_info(self, idraw: ImageDraw, statistics: allies_statistics):
         text_height = 125
