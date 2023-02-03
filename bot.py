@@ -38,6 +38,7 @@ async def help(message: types.Message):
             fmt.text('куда - опрос, куда идем играть;'),
             fmt.text('получка - стикер с получкой.'),
             fmt.text('кенты - винрейт с кентами за последние 2 недели.'),
+            fmt.text('белка - лузстрик Рашида на белке.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -92,22 +93,24 @@ async def salary(message: types.Message):
 @dp.message_handler(commands='стата')
 async def last_game(message: types.Message):
     user_id = str(message.from_user.id)
-    match_info_image_bytes = await get_last_match_results(user_id)
+    match_info_image = await get_last_match_results(user_id)
 
-    await message.answer_photo(match_info_image_bytes)
+    await message.answer_photo(match_info_image)
 
 
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
-    match_info_image_bytes = await get_last_match_results('234173758')
-    await message.answer_photo(match_info_image_bytes)
+    match_info_image = await get_last_match_results('234173758')
+
+    await message.answer_photo(match_info_image)
 
 
 @dp.message_handler(commands='кенты')
 async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
-    statistics = await get_allies_info_for_last_two_weeks(user_id)
-    await message.answer(statistics)
+    statistics_image = await get_allies_info_for_last_two_weeks(user_id)
+
+    await message.answer_photo(statistics_image)
 
 
 @dp.message_handler(commands='время')
@@ -115,6 +118,12 @@ async def get_time(message: types.Message):
     user_id = str(message.from_user.id)
     await message.answer(get_today_info_message(user_id))
     await message.answer_sticker(get_mr_incredible_sticker())
+
+
+@dp.message_handler(commands='белка')
+async def squirrel(message: types.Message):
+    with open('media/squirrel.webp', 'rb') as photo:
+        await message.answer_photo(photo)
 
 
 if __name__ == "__main__":
