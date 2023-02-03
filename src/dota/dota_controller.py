@@ -1,10 +1,16 @@
 import json
 import io
 
-from .dota_models import match_info, player_info
-from ..image_generator import image_generator, image_generator_settings, dota_objects_parser
+from .dota_models import match_info, player_info, allies_statistics, ally_info
+from ..image_generator import image_generator, statistics_image_generator, image_generator_settings, dota_objects_parser, fonts, text_colors
 from .dota_api_client import get_last_match_json, get_allies_statistics_json
 from ..user_infos import user_infos
+
+
+def image_to_bytes(img):
+    img_bytes = io.BytesIO()
+    img.save(img_bytes, format='webp')
+    return img_bytes.getvalue()
 
 
 def parse_last_match(last_match: json, user_id: str):
@@ -60,31 +66,26 @@ async def get_last_match_results(user_id: str):
 
     settings = image_generator_settings()
     parser = dota_objects_parser('configs/heroes_ids.json', 'configs/item_ids.json', 'configs/game_mode.json')
-    generator = image_generator(settings, parser)
+    generator = statistics_image_generator(settings, parser)
 
     match_info_image = generator.generate_last_match_info_picture(match_info)
-    img_byte_arr = io.BytesIO()
-    match_info_image.save(img_byte_arr, format='webp')
-    return img_byte_arr.getvalue()
+    return image_to_bytes(match_info_image)
 
 
 def parse_allies_statistics(user_id: str, statistics: json):
-
     user_dota_ids = [user_info.dota_id for user_info in user_infos.values()]
     filtered_statistics = list(filter(lambda stat: stat['account_id'] in user_dota_ids, statistics))
 
-    parsed_data = [f'{user_infos[user_id].name}, твой винрейт с кентами за последние 2 недели: ']
+    allies = []
     for stat in filtered_statistics:
-        nickname = stat['personaname']
-        games = stat['games']
-        wins = stat['win']
-        loses = games - wins
-        result = wins - loses
-        result_str = f'{result}'
-        if result > 0:
-            result_str = f'+{result}'
-        parsed_data.append(f'{nickname}: {games} игр ({result_str})')
-    return '\n'.join(parsed_data)
+        allies.append(ally_info(stat['avatar'], stat['personaname'], stat['games'], stat['win']))
+
+    stats = allies_statistics(user_infos[user_id].name, allies)
+
+    settings = image_generator_settings(width=400, height=300)
+    allies_statistics_image = image_generator(settings).generate_allies_statistics(stats)
+
+    return image_to_bytes(allies_statistics_image)
 
 
 async def get_allies_info_for_last_two_weeks(user_id: str):

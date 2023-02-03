@@ -33,3 +33,17 @@ class match_info:
     radiant_win: bool
     dire_score: int
     radiant_score: int
+
+
+@dataclass
+class ally_info:
+    avatar: str
+    nickname: str
+    total_games: int
+    wins: int
+
+
+@dataclass
+class allies_statistics:
+    nickname: str
+    allies: List[ally_info]

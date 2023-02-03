@@ -108,8 +108,9 @@ async def not_today(message: types.Message):
 @dp.message_handler(commands='кенты')
 async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
-    statistics = await get_allies_info_for_last_two_weeks(user_id)
-    await message.answer(statistics)
+    statistics_image = await get_allies_info_for_last_two_weeks(user_id)
+
+    await message.answer_photo(statistics_image)
 
 
 @dp.message_handler(commands='время')
