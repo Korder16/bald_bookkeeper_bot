@@ -63,21 +63,21 @@ async def sigame_poll(message: types.Message):
 
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    photo = open('media/rama.webp', 'rb')
-    await message.answer_photo(photo)
+    with open('media/rama.webp', 'rb') as photo:
+        await message.answer_photo(photo)
 
 
 @dp.message_handler(commands='клоун')
 async def show_clown(message: types.Message):
-    photo = open('media/clown.webp', 'rb')
-    await message.answer_photo(photo)
+    with open('media/clown.webp', 'rb') as photo:
+        await message.answer_photo(photo)
 
 
 @dp.message_handler(commands='дура')
 async def show_dura(message: types.Message):
     dura_images = ['media/clown.webp', 'media/dura.webp']
-    photo = open(random.choice(dura_images), 'rb')
-    await message.answer_photo(photo)
+    with open(random.choice(dura_images), 'rb') as photo:
+        await message.answer_photo(photo)
 
 
 @dp.message_handler(commands='домой')
