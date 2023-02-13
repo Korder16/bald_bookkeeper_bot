@@ -9,16 +9,19 @@ def is_rashid_relaxing():
 
 
 def get_user_message(user_id: int):
-    username = user_infos[user_id].name
+    if user_id == '151803613':
+        username = 'Пенис'
+    else:
+        username = user_infos[user_id].name
     warning_emoji = get_warning_emoji()
     return f'{warning_emoji}{username}{warning_emoji}'
 
 
 def get_hours_until_end_of_work_message(stop_working_hour: int):
+    bang_emoji = get_bang_emoji()
     if is_now_working_time(stop_working_hour):
         hours_until_end_of_work = get_hours_until_end_of_work(stop_working_hour)
         emoji_hours = get_emoji_number(hours_until_end_of_work)
-        bang_emoji = get_bang_emoji()
 
         message = f'{bang_emoji}{emoji_hours}'
         if (hours_until_end_of_work == 0) or (hours_until_end_of_work > 4):

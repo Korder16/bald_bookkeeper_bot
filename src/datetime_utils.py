@@ -27,7 +27,7 @@ def get_day_of_week_name():
 
 def get_days_until_weekend():
     current_day_of_week = get_day_of_week()
-    return 5 - current_day_of_week
+    return 4 - current_day_of_week
 
 
 def is_now_working_time(end_of_work: int):
