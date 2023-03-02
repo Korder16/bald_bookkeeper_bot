@@ -39,6 +39,7 @@ async def help(message: types.Message):
             fmt.text('получка - стикер с получкой.'),
             fmt.text('кенты - винрейт с кентами за последние 2 недели.'),
             fmt.text('белка - лузстрик Рашида на белке.'),
+            fmt.text('Ибрагим - показывает Ибрагима.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -124,6 +125,18 @@ async def get_time(message: types.Message):
 async def squirrel(message: types.Message):
     with open('media/squirrel.webp', 'rb') as photo:
         await message.answer_photo(photo)
+
+
+@dp.message_handler(commands='ибрагим')
+async def ibragym(message: types.Message):
+    user_id = str(message.from_user.id)
+
+    if user_id == '207565268':
+        with open('media/rock.mp4', 'rb') as gif:
+            await message.answer_animation(gif)
+    else:
+        with open('media/ibragym.webp', 'rb') as photo:
+            await message.answer_photo(photo)
 
 
 if __name__ == "__main__":
