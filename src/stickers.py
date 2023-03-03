@@ -19,3 +19,6 @@ def get_pay_sticker_id():
 
 def get_go_home_sticker_id():
     return 'CAACAgIAAxkBAAEFPvNizFgQ9nKuLwGp_kaDdp9DI2VpLgACERQAAqAAAehLhynfNnamXaEpBA'
+
+def get_ronaldo_sticked_id():
+    return 'CAACAgIAAxkBAAEd7T5kAjns3pTDTQ0zcyI6rkvEY1-lUAAC6w8AAgGi2Ev5tLQa4TvsLy4E'

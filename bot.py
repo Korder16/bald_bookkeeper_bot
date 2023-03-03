@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, get_pay_sticker_id, get_go_home_sticker_id
+from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, get_pay_sticker_id, get_go_home_sticker_id, get_ronaldo_sticked_id
 import random
 
 logging.basicConfig(
@@ -125,6 +125,7 @@ async def get_time(message: types.Message):
 async def squirrel(message: types.Message):
     with open('media/squirrel.webp', 'rb') as photo:
         await message.answer_photo(photo)
+    await message.answer_sticker(get_ronaldo_sticked_id())
 
 
 @dp.message_handler(commands='ибрагим')
