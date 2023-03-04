@@ -43,7 +43,7 @@ def get_hours_until_end_of_work_message(day_of_week: int, stop_working_hour: int
 
 
 def get_days_until_weekend_message(day_of_week: int):
-    
+
     def make_day_of_week_message(beach_emoji, day_of_week):
         day_until_weekend = 4 - day_of_week
         emoji_days = get_emoji_number(4 - day_of_week)
@@ -59,11 +59,12 @@ def get_days_until_weekend_message(day_of_week: int):
         return message
 
     beach_emoji = get_emoji_by_alias(emojis['beach'])
-    
+
     if is_weekend(day_of_week):
         return f'{beach_emoji} выходные {beach_emoji}'
     else:
         return make_day_of_week_message(beach_emoji, day_of_week)
+
 
 def get_today_info_message(user_id: str):
     stop_working_hour = user_infos[user_id].stop_working_hour

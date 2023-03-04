@@ -13,6 +13,7 @@ def get_day_of_week():
 def is_weekend(day: int):
     return day > 4
 
+
 def get_day_of_week_name():
     russian_weekdays = {
         0: 'понедельник',
