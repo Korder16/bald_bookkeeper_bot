@@ -66,9 +66,8 @@ async def get_last_match_results(user_id: str):
 
     settings = image_generator_settings()
     parser = dota_objects_parser('configs/heroes_ids.json', 'configs/item_ids.json', 'configs/game_mode.json')
-    generator = statistics_image_generator(settings, parser)
 
-    match_info_image = generator.generate_last_match_info_picture(match_info)
+    match_info_image = image_generator(settings).generate_last_match_statistics(parser, match_info)
     return image_to_bytes(match_info_image)
 
 

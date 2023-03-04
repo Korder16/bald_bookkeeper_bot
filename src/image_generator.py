@@ -119,7 +119,6 @@ class statistics_image_generator:
         img.save('media/template.webp')
 
     def generate_last_match_info_picture(self, m_info: match_info):
-        self.generate_match_info_template()
         template_image = Image.open('media/template.webp')
         idraw = ImageDraw.Draw(template_image)
 
@@ -244,3 +243,7 @@ class image_generator:
     def generate_allies_statistics(self, statistics: allies_statistics):
         generator = allies_statistics_image_generator(self.__settings)
         return generator.generate_allies_statistics_image(statistics)
+
+    def generate_last_match_statistics(self, parser, m_info: match_info):
+        generator = statistics_image_generator(self.__settings, parser)
+        return generator.generate_last_match_info_picture(m_info)
