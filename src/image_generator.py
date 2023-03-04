@@ -116,7 +116,7 @@ class statistics_image_generator:
         title_text_height = 5
         self.__image_writer.write_text((65, title_text_height), f'{m_info.id}', font=self.__settings.font.title)
         self.__image_writer.write_text((480, title_text_height), 'Рейтинговый')
-        self.__image_writer.write_text((610, title_text_height), self.__parser.get_game_mode_by_id(m_info.game_mode_id))
+        self.__image_writer.write_text((610, title_text_height), f'{self.__parser.get_game_mode_by_id(m_info.game_mode_id)}')
         self.__image_writer.write_text((720, title_text_height), 'Россия')
 
         duration = strftime('%H:%M:%S', gmtime(m_info.duration)).lstrip('0:')
@@ -126,15 +126,15 @@ class statistics_image_generator:
         self.__image_writer.write_text((940, title_text_height), pretty_start_time)
 
         result, result_color = self.get_match_results(m_info.radiant_win, m_info.players[0].team)
-        self.__image_writer.write_text((540, title_text_height + 50), result, result_color, self.__settings.font.title)
+        self.__image_writer.write_text((540, title_text_height + 50), result, result_color, font=self.__settings.font.title)
         self.__image_writer.write_text((530, title_text_height + 80), f'{m_info.radiant_score}', self.__settings.text_color.green, self.__settings.font.title)
-        self.__image_writer.write_text((590, title_text_height + 80), duration, self.__settings.font.title)
+        self.__image_writer.write_text((590, title_text_height + 80), duration, font=self.__settings.font.title)
         self.__image_writer.write_text((670, title_text_height + 80), f'{m_info.dire_score}', self.__settings.text_color.red, self.__settings.font.title)
 
         team, team_color = self.get_team(m_info.players[0].team)
 
         text_height = 160
-        self.__image_writer.write_text((10, text_height - 60), f'СИЛЫ {team}', team_color, self.__settings.font.title)
+        self.__image_writer.write_text((10, text_height - 60), f'СИЛЫ {team}', team_color, font=self.__settings.font.title)
 
         for player in m_info.players:
             hero_icon = Image.open(self.__parser.get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
@@ -142,14 +142,14 @@ class statistics_image_generator:
             self.__image_writer.write_text((380, text_height), f'{player.kills}')
             self.__image_writer.write_text((405, text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
             self.__image_writer.write_text((430, text_height), f'{player.assists}')
-            self.__image_writer.write_text((460, text_height), f'{num_to_k(player.net_worth)}K', self.__settings.text_color.gold)
-            self.__image_writer.write_text((520, text_height), f'{player.last_hits}', self.__settings.text_color.grey)
-            self.__image_writer.write_text((560, text_height), f'{player.denies}', self.__settings.text_color.grey)
-            self.__image_writer.write_text((595, text_height), f'{num_to_k(player.gpm)}', self.__settings.text_color.grey)
-            self.__image_writer.write_text((635, text_height), f'{num_to_k(player.xpm)}', self.__settings.text_color.grey)
-            self.__image_writer.write_text((677, text_height), f'{num_to_k(player.hero_damage)}K', self.__settings.text_color.grey)
-            self.__image_writer.write_text((770, text_height), f'{num_to_k(player.hero_heal)}K', self.__settings.text_color.grey)
-            self.__image_writer.write_text((835, text_height), f'{num_to_k(player.tower_damage)}', self.__settings.text_color.grey)
+            self.__image_writer.write_text((460, text_height), f'{num_to_k(player.net_worth)}K', color=self.__settings.text_color.gold)
+            self.__image_writer.write_text((520, text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((560, text_height), f'{player.denies}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((595, text_height), f'{num_to_k(player.gpm)}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((635, text_height), f'{num_to_k(player.xpm)}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((677, text_height), f'{num_to_k(player.hero_damage)}K', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((770, text_height), f'{num_to_k(player.hero_heal)}K', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((835, text_height), f'{num_to_k(player.tower_damage)}', color=self.__settings.text_color.grey)
 
             item_indent = 0
             for item_id in player.items:
@@ -172,7 +172,7 @@ class allies_statistics_image_generator:
         self.__settings = settings
 
     def generate_player_info(self, nickname: str):
-        self.__image_writer.write_text((10, 25), f'{nickname}, твой винрейт с кентами', self.__settings.font.title)
+        self.__image_writer.write_text((10, 25), f'{nickname}, твой винрейт с кентами', font=self.__settings.font.title)
 
     def generate_player_info_without_allies(self, nickname: str):
         self.__image_writer.write_text((10, 25), f'{nickname}, сори, кентов нет', font=self.__settings.font.title)
@@ -180,14 +180,14 @@ class allies_statistics_image_generator:
     def generate_header(self):
         start_y = 25
 
-        self.__image_writer.write_text((10, start_y + 40), 'ИМЯ', self.__settings.text_color.grey)
-        self.__image_writer.write_text((10, start_y + 60), 'СОЮЗНИКА', self.__settings.text_color.grey)
-        self.__image_writer.write_text((150, start_y + 40), 'ЧИСЛО', self.__settings.text_color.grey)
-        self.__image_writer.write_text((150, start_y + 60), 'ИГР', self.__settings.text_color.grey)
-        self.__image_writer.write_text((230, start_y + 40), 'ПОБ', self.__settings.text_color.grey)
-        self.__image_writer.write_text((230, start_y + 60), 'ПОР', self.__settings.text_color.grey)
-        self.__image_writer.write_text((310, start_y + 40), 'ДОЛЯ', self.__settings.text_color.grey)
-        self.__image_writer.write_text((310, start_y + 60), 'ПОБЕД', self.__settings.text_color.grey)
+        self.__image_writer.write_text((10, start_y + 40), 'ИМЯ', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((10, start_y + 60), 'СОЮЗНИКА', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((150, start_y + 40), 'ЧИСЛО', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((150, start_y + 60), 'ИГР', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((230, start_y + 40), 'ПОБ', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((230, start_y + 60), 'ПОР', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((310, start_y + 40), 'ДОЛЯ', color=self.__settings.text_color.grey)
+        self.__image_writer.write_text((310, start_y + 60), 'ПОБЕД', color=self.__settings.text_color.grey)
 
     def generate_ally_info(self, ally: ally_info, text_height: int):
         nickname_x = 10
@@ -197,9 +197,9 @@ class allies_statistics_image_generator:
         self.__image_writer.write_text((nickname_x, text_height), ally.nickname)
         self.__image_writer.write_text((nickname_x + 140, text_height), f'{ally.total_games}')
         if result >= 0:
-            self.__image_writer.write_text((nickname_x + 220, text_height), f'{result}', self.__settings.text_color.green)
+            self.__image_writer.write_text((nickname_x + 220, text_height), f'{result}', color=self.__settings.text_color.green)
         else:
-            self.__image_writer.write_text((nickname_x + 220, text_height), f'{result}', self.__settings.text_color.red)
+            self.__image_writer.write_text((nickname_x + 220, text_height), f'{result}', color=self.__settings.text_color.red)
 
         winrate = (ally.wins / ally.total_games) * 100
         self.__image_writer.write_text((nickname_x + 300, text_height), f'{winrate:.1f}%')
