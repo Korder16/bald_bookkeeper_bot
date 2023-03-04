@@ -13,6 +13,12 @@ emoji_numbers = {
     9: ':nine:'
 }
 
+emojis = {
+    'warning': 'warning',
+    'bang': 'bangbang',
+    'beach': 'beach_with_umbrella'
+}
+
 
 def get_emoji_number(number: int):
     num_str = emoji_numbers[number]
@@ -21,15 +27,3 @@ def get_emoji_number(number: int):
 
 def get_emoji_by_alias(alias: str):
     return emoji.emojize(f':{alias}:', language='alias')
-
-
-def get_warning_emoji():
-    return get_emoji_by_alias('warning')
-
-
-def get_bang_emoji():
-    return get_emoji_by_alias('bangbang')
-
-
-def get_beach_emoji():
-    return get_emoji_by_alias('beach_with_umbrella')
