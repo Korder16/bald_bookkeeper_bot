@@ -141,6 +141,13 @@ async def ibragym(message: types.Message):
             await message.answer_photo(photo)
 
 
+@dp.message_handler(commands='дуза')
+async def medusa(message: types.Message):
+    with open('media/medusa.webp', 'rb') as photo:
+        await message.answer_photo(photo)
+    await message.answer_sticker(sticker_ids['ronaldo'])
+
+
 if __name__ == "__main__":
     parse_user_config()
     executor.start_polling(dp, skip_updates=True)
