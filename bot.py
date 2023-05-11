@@ -151,7 +151,7 @@ async def medusa(message: types.Message):
 
 @dp.message_handler(commands='марафон')
 async def marathon(message: types.Message):
-    await message.answer(f'{count_days_without_marathon()} дней без марафона Рашида')
+    await message.answer(f'Дней без марафона Рашида: {count_days_without_marathon()}')
 
 if __name__ == "__main__":
     parse_user_config()
