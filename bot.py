@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids
+from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon
 import random
 
 logging.basicConfig(
@@ -40,6 +40,7 @@ async def help(message: types.Message):
             fmt.text('кенты - винрейт с кентами за последние 2 недели.'),
             fmt.text('белка - лузстрик Рашида на белке.'),
             fmt.text('Ибрагим - показывает Ибрагима.'),
+            fmt.text('марафон - показывает количество дней без марафона.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -147,6 +148,10 @@ async def medusa(message: types.Message):
         await message.answer_photo(photo)
     await message.answer_sticker(sticker_ids['ronaldo'])
 
+
+@dp.message_handler(commands='марафон')
+async def marathon(message: types.Message):
+    await message.answer(f'{count_days_without_marathon()} дней без марафона Рашида')
 
 if __name__ == "__main__":
     parse_user_config()
