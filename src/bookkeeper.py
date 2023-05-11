@@ -3,6 +3,7 @@ from .datetime_utils import get_day_of_week, get_hours_until_end_of_work, is_now
 from .emoji_generator import get_emoji_number, get_emoji_by_alias, emojis
 from .stickers import sticker_ids
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 def is_rashid_relaxing():
     return not is_now_working_time(18)
@@ -86,4 +87,12 @@ def get_mr_incredible_sticker():
 def count_days_without_marathon():
     first_time_marathon_mention = date(2016, 5, 29)
     today = date.today()
-    return (today - first_time_marathon_mention).days
+    diff = relativedelta(today, first_time_marathon_mention)
+    message = 'Сколько уже ждем марафон Рашида?\n'
+    message_tokens = [
+        f'{diff.years} лет',
+        f'{diff.months} месяцев',
+        f'{diff.days} дней'
+    ]
+
+    return message + ', '.join(message_tokens)
