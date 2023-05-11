@@ -2,7 +2,7 @@ from .user_infos import user_infos
 from .datetime_utils import get_day_of_week, get_hours_until_end_of_work, is_now_working_time, is_weekend
 from .emoji_generator import get_emoji_number, get_emoji_by_alias, emojis
 from .stickers import sticker_ids
-
+from datetime import date
 
 def is_rashid_relaxing():
     return not is_now_working_time(18)
@@ -81,3 +81,9 @@ def get_today_info_message(user_id: str):
 def get_mr_incredible_sticker():
     day_of_week = get_day_of_week()
     return sticker_ids['mr_incredible'][day_of_week]
+
+
+def count_days_without_marathon():
+    first_time_marathon_mention = date(2016, 5, 29)
+    today = date.today()
+    return (today - first_time_marathon_mention).days
