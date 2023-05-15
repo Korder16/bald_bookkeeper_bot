@@ -85,7 +85,7 @@ def get_mr_incredible_sticker():
 
 
 def count_days_without_marathon():
-    first_time_marathon_mention = date(2016, 5, 29)
+    first_time_marathon_mention = date(2016, 1, 18)
     today = date.today()
     diff = relativedelta(today, first_time_marathon_mention)
     message = 'Сколько уже ждем марафон Рашида?\n'
