@@ -4,6 +4,7 @@ from .emoji_generator import get_emoji_number, get_emoji_by_alias, emojis
 from .stickers import sticker_ids
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from random import choice
 
 def is_rashid_relaxing():
     return not is_now_working_time(18)
@@ -85,11 +86,18 @@ def count_days_without_marathon():
     first_time_marathon_mention = date(2016, 1, 18)
     today = date.today()
     diff = relativedelta(today, first_time_marathon_mention)
-    message = 'Сколько уже ждем марафон Рашида?\n'
+    message_headers = [
+        'Сколько уже ждем марафон Рашида?',
+        'Рашид воздуханит насчёт марафона уже',
+        'Рашид не держит слово на протяжении',
+        'С момента как Рашид наебал Михана прошло уже',
+        'Рашид и марафон доты не могут встретиться на протяжении',
+        ]
+
     message_tokens = [
         f'{diff.years} лет',
         f'{diff.months} месяцев',
         f'{diff.days} дней'
     ]
 
-    return message + ', '.join(message_tokens)
+    return f'{choice(message_headers)}\n' + ', '.join(message_tokens)
