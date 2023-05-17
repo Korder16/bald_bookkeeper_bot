@@ -10,10 +10,7 @@ def is_rashid_relaxing():
 
 
 def make_user_message(user_id: int):
-    if user_id == '151803613':
-        username = 'Пенис'
-    else:
-        username = user_infos[user_id].name
+    username = user_infos[user_id].name
 
     warning_emoji = get_emoji_by_alias(emojis['warning'])
     return f'{warning_emoji}{username}{warning_emoji}'
