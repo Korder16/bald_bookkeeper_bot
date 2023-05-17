@@ -152,6 +152,8 @@ async def medusa(message: types.Message):
 @dp.message_handler(commands='марафон')
 async def marathon(message: types.Message):
     await message.answer(count_days_without_marathon())
+    with open('media/marathon_promise.webp', 'rb') as photo:
+        await message.answer_photo(photo)
 
 if __name__ == "__main__":
     parse_user_config()
