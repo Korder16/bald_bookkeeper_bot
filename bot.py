@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon
+from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
 import random
 
 logging.basicConfig(
@@ -41,6 +41,7 @@ async def help(message: types.Message):
             fmt.text('белка - лузстрик Рашида на белке.'),
             fmt.text('Ибрагим - показывает Ибрагима.'),
             fmt.text('марафон - показывает количество дней без марафона.'),
+            fmt.text('властелин - показывает, когда Михан был активным властелином.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -154,6 +155,11 @@ async def marathon(message: types.Message):
     await message.answer(count_days_without_marathon())
     with open('media/marathon_promise.webp', 'rb') as photo:
         await message.answer_photo(photo)
+
+
+@dp.message_handler(commands='властелин')
+async def ex_ancient(message: types.Message):
+    await message.answer(count_day_from_ex_ancient())
 
 if __name__ == "__main__":
     parse_user_config()

@@ -6,6 +6,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from random import choice
 
+
 def is_rashid_relaxing():
     return not is_now_working_time(18)
 
@@ -82,22 +83,36 @@ def get_mr_incredible_sticker():
     return sticker_ids['mr_incredible'][day_of_week]
 
 
-def count_days_without_marathon():
-    first_time_marathon_mention = date(2016, 1, 18)
-    today = date.today()
-    diff = relativedelta(today, first_time_marathon_mention)
-    message_headers = [
-        'Сколько уже ждем марафон Рашида?',
-        'Рашид воздуханит насчёт марафона уже',
-        'Рашид не держит слово на протяжении',
-        'С момента как Рашид наебал Михана прошло уже',
-        'Рашид и марафон доты не могут встретиться на протяжении',
-        ]
-
+def make_date_message(diff):
     message_tokens = [
         f'{diff.years} лет',
         f'{diff.months} месяцев',
         f'{diff.days} дней'
     ]
 
-    return f'{choice(message_headers)}\n' + ', '.join(message_tokens)
+    return ', '.join(message_tokens)
+
+
+def count_date_diff(date_from: date):
+    return relativedelta(date.today(), date_from)
+
+
+def count_days_without_marathon():
+    first_time_marathon_mention = date(2016, 1, 18)
+    diff = count_date_diff(first_time_marathon_mention)
+    message_headers = [
+        'Сколько уже ждем марафон Рашида?',
+        'Рашид воздуханит насчёт марафона уже',
+        'Рашид не держит слово на протяжении',
+        'С момента как Рашид наебал Михана прошло уже',
+        'Рашид и марафон доты не могут встретиться на протяжении',
+    ]
+
+    return f'{choice(message_headers)}\n' + make_date_message(diff)
+
+
+def count_day_from_ex_ancient():
+    last_time_ancient = date(2019, 10, 19)
+    diff = count_date_diff(last_time_ancient)
+
+    return 'Михан бывший властелин уже\n' + make_date_message(diff)
