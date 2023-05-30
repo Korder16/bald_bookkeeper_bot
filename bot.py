@@ -42,6 +42,7 @@ async def help(message: types.Message):
             fmt.text('Ибрагим - показывает Ибрагима.'),
             fmt.text('марафон - показывает количество дней без марафона.'),
             fmt.text('властелин - показывает, когда Михан был активным властелином.'),
+            fmt.text('пахать - отвечает на вопрос, нужно ли пахать.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -160,6 +161,16 @@ async def marathon(message: types.Message):
 @dp.message_handler(commands='властелин')
 async def ex_ancient(message: types.Message):
     await message.answer(count_day_from_ex_ancient())
+
+
+@dp.message_handler(commands='пахать')
+async def work_hard(message: types.Message):
+    work_urls = [
+        'https://youtube.com/shorts/Ldl4BIK3Hbo?feature=share',
+        'https://youtube.com/shorts/SCO2LHHY14o?feature=share'
+    ]
+
+    await message.answer(random.choice(work_urls))
 
 if __name__ == "__main__":
     parse_user_config()
