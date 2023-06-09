@@ -139,7 +139,7 @@ async def ibragym(message: types.Message):
         with open('media/rock.mp4', 'rb') as gif:
             await message.answer_animation(gif)
     else:
-        ibragym_images = ['media/ibragym.webp', 'media/ibragym_2.webp']
+        ibragym_images = ['media/ibragym.webp', 'media/ibragym_2.webp', 'media/ibragym_3.webp']
         with open(random.choice(ibragym_images), 'rb') as photo:
             await message.answer_photo(photo)
 
