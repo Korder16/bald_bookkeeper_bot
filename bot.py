@@ -97,16 +97,29 @@ async def salary(message: types.Message):
 @dp.message_handler(commands='стата')
 async def last_game(message: types.Message):
     user_id = str(message.from_user.id)
-    match_info_image = await get_last_match_results(user_id)
+    match_info_image, is_win = await get_last_match_results(user_id)
 
     await message.answer_photo(match_info_image)
 
+    if is_win:
+        photo_name = 'miracle'
+    else:
+        photo_name = 'golovach'
+    with open(f'media/{photo_name}.webp', 'rb') as photo:
+        await message.answer_photo(photo)
 
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
-    match_info_image = await get_last_match_results('234173758')
+    match_info_image, is_win = await get_last_match_results('234173758')
 
     await message.answer_photo(match_info_image)
+
+    if is_win:
+        photo_name = 'miracle'
+    else:
+        photo_name = 'golovach'
+    with open(f'media/{photo_name}.webp', 'rb') as photo:
+        await message.answer_photo(photo)
 
 
 @dp.message_handler(commands='кенты')

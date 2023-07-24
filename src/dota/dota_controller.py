@@ -16,12 +16,17 @@ def image_to_bytes(img):
 def parse_last_match(last_match: json):
     players = last_match['players']
 
+    player_team = 'radiant'
+
     match_players = []
     for player in players:
         player_name = 'бомж'
         for user_info in user_infos.values():
             if player['account_id'] == user_info.dota_id:
                 player_name = user_info.name
+
+                if not player['isRadiant']:
+                    player_team = 'dire'
 
         match_players.append(player_info(
             player_name,
@@ -53,7 +58,7 @@ def parse_last_match(last_match: json):
     radiant_team = [player for player in match_players if player.team == True]
     dire_team = [player for player in match_players if player.team == False]
 
-    return match_info(
+    return (match_info(
         last_match['match_id'],
         radiant_team,
         dire_team,
@@ -63,19 +68,20 @@ def parse_last_match(last_match: json):
         last_match['radiant_win'],
         last_match['dire_score'],
         last_match['radiant_score']
-    )
+    ),
+    (player_team == 'radiant' and last_match['radiant_win']) or (player_team == 'dire' and not last_match['radiant_win']) )
+
 
 
 async def get_last_match_results(user_id: str):
     last_match = await get_last_match_json(user_id)
 
-    match_info = parse_last_match(last_match)
-
+    match_info, is_win = parse_last_match(last_match)
     settings = image_generator_settings()
     parser = dota_objects_parser('configs/heroes_ids.json', 'configs/item_ids.json', 'configs/game_mode.json')
 
     match_info_image = image_generator(settings).generate_last_match_statistics(parser, match_info)
-    return image_to_bytes(match_info_image)
+    return image_to_bytes(match_info_image), is_win
 
 
 def parse_allies_statistics(user_id: str, statistics: json):
