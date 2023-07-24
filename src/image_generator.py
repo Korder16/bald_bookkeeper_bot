@@ -9,10 +9,9 @@ from random import choice
 
 def num_to_k(num: int):
     if num > 1000:
-        return round(num / 1000, 1)
+        return f'{round(num / 1000, 1)}K'
     else:
-        return num
-
+        return f'{num}'
 
 @dataclass
 class fonts:
@@ -93,22 +92,49 @@ class statistics_image_generator:
         self.__settings = settings
         self.__parser = parser
 
-    def get_match_results(self, radiant_win: bool, team: bool):
-        victory_messages = ['разнёс бомжей', 'засолил', '2ez', 'в сола']
-        defeat_messages = ['отлетел очередняра', 'заруинили', 'за тупость']
 
-        if (radiant_win and team) or (not radiant_win and not team):
-            result_message = choice(victory_messages)
-            return result_message, self.__settings.text_color.green
-        else:
-            result_message = choice(defeat_messages)
-            return result_message, self.__settings.text_color.red
+    def generate_match_info_template(self):
 
-    def get_team(self, team: bool):
-        if team:
-            return 'СВЕТА', self.__settings.text_color.green
-        else:
-            return 'ТЬМЫ', self.__settings.text_color.red
+        def generate_player_statistics_header(idraw, text_height):
+            idraw.text((10, text_height), 'Герой', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((80, text_height), 'Игрок', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((380, text_height), ' У', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((405, text_height), ' С', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((430, text_height), ' П', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((460, text_height), '   ОЦ', self.__settings.text_color.gold, self.__settings.font.normal)
+            idraw.text((520, text_height), '  Д', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((560, text_height), 'НО', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((595, text_height), 'З/М', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((635, text_height), 'О/М', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((687, text_height), 'Урон', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((750, text_height), 'Лечение', self.__settings.text_color.white, self.__settings.font.normal)
+            idraw.text((835, text_height), 'Постр', self.__settings.text_color.white, self.__settings.font.normal)
+
+            idraw.text((945, text_height), 'Предметы', self.__settings.text_color.white, self.__settings.font.normal)
+
+        img = Image.new('RGBA', (self.__settings.width, 740), (28, 36, 45))
+        idraw = ImageDraw.Draw(img)
+
+        title_text_height = 5
+        text_height = 130
+        idraw.text((10, title_text_height), 'Матч', self.__settings.text_color.white, self.__settings.font.title)
+        idraw.text((480, title_text_height + 20), 'ТИП ЛОББИ', self.__settings.text_color.grey, self.__settings.font.normal)
+        idraw.text((610, title_text_height + 20), 'РЕЖИМ ИГРЫ', self.__settings.text_color.grey, self.__settings.font.normal)
+        idraw.text((720, title_text_height + 20), 'РЕГИОН', self.__settings.text_color.grey, self.__settings.font.normal)
+        idraw.text((800, title_text_height + 20), 'ДЛИТЕЛЬНОСТЬ', self.__settings.text_color.grey, self.__settings.font.normal)
+        idraw.text((1000, title_text_height + 20), 'ДАТА', self.__settings.text_color.grey, self.__settings.font.normal)
+
+        idraw.text((10, text_height - 30), f'СИЛЫ СВЕТА', text_colors.green, font=self.__settings.font.title)
+
+        generate_player_statistics_header(idraw, text_height)
+
+        second_header_indent = 320
+
+        idraw.text((10, text_height + second_header_indent - 30), f'СИЛЫ ТЬМЫ', text_colors.red, font=self.__settings.font.title)
+
+        generate_player_statistics_header(idraw, text_height + second_header_indent)
+
+        img.save('media/template.webp')
 
     def generate_last_match_info_image(self, m_info: match_info):
         self.__image_writer = image_writer(self.__settings, 'media/template.webp')
@@ -125,44 +151,79 @@ class statistics_image_generator:
         pretty_start_time = datetime.fromtimestamp(m_info.start_time, tz=None).strftime("%d.%m.%Y, %H:%M:%S")
         self.__image_writer.write_text((940, title_text_height), pretty_start_time)
 
-        result, result_color = self.get_match_results(m_info.radiant_win, m_info.players[0].team)
-        self.__image_writer.write_text((540, title_text_height + 50), result, result_color, font=self.__settings.font.title)
+        if m_info.radiant_win:
+            self.__image_writer.write_text((540, title_text_height + 50), 'ПОБЕДА СИЛ СВЕТА', text_colors.green, font=self.__settings.font.title)
+        else:
+            self.__image_writer.write_text((540, title_text_height + 50), 'ПОБЕДА СИЛ ТЬМЫ', text_colors.red, font=self.__settings.font.title)
+
         self.__image_writer.write_text((530, title_text_height + 80), f'{m_info.radiant_score}', self.__settings.text_color.green, self.__settings.font.title)
         self.__image_writer.write_text((590, title_text_height + 80), duration, font=self.__settings.font.title)
         self.__image_writer.write_text((670, title_text_height + 80), f'{m_info.dire_score}', self.__settings.text_color.red, self.__settings.font.title)
 
-        team, team_color = self.get_team(m_info.players[0].team)
 
         text_height = 160
-        self.__image_writer.write_text((10, text_height - 60), f'СИЛЫ {team}', team_color, font=self.__settings.font.title)
 
-        for player in m_info.players:
+        player_indent = 0
+        for player in m_info.radiant_team:
+            player_text_height = text_height + player_indent
             hero_icon = Image.open(self.__parser.get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
-            self.__image_writer.write_text((80, text_height), player.nickname)
-            self.__image_writer.write_text((380, text_height), f'{player.kills}')
-            self.__image_writer.write_text((405, text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((430, text_height), f'{player.assists}')
-            self.__image_writer.write_text((460, text_height), f'{num_to_k(player.net_worth)}K', color=self.__settings.text_color.gold)
-            self.__image_writer.write_text((520, text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((560, text_height), f'{player.denies}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((595, text_height), f'{num_to_k(player.gpm)}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((635, text_height), f'{num_to_k(player.xpm)}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((677, text_height), f'{num_to_k(player.hero_damage)}K', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((770, text_height), f'{num_to_k(player.hero_heal)}K', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((835, text_height), f'{num_to_k(player.tower_damage)}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((80, player_text_height), player.nickname)
+            self.__image_writer.write_text((380, player_text_height), f'{player.kills}')
+            self.__image_writer.write_text((405, player_text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((430, player_text_height), f'{player.assists}')
+            self.__image_writer.write_text((460, player_text_height), num_to_k(player.net_worth), color=self.__settings.text_color.gold)
+            self.__image_writer.write_text((520, player_text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((560, player_text_height), f'{player.denies}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((595, player_text_height), num_to_k(player.gpm), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((635, player_text_height), num_to_k(player.xpm), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((677, player_text_height), num_to_k(player.hero_damage), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((770, player_text_height), num_to_k(player.hero_heal), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((835, player_text_height), num_to_k(player.tower_damage), color=self.__settings.text_color.grey)
 
             item_indent = 0
             for item_id in player.items:
                 if item_id != 0:
                     item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(item_id)).resize((38, 28))
-                    self.__image_writer.get_image().paste(item_icon, (940 + item_indent, text_height))
+                    self.__image_writer.get_image().paste(item_icon, (940 + item_indent, player_text_height))
                 item_indent += 40
 
             if player.neutral_item_id != 0:
                 neutral_item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(player.neutral_item_id)).resize((38, 28))
-                self.__image_writer.get_image().paste(neutral_item_icon, (950 + item_indent, text_height))
+                self.__image_writer.get_image().paste(neutral_item_icon, (950 + item_indent, player_text_height))
 
-        self.__image_writer.get_image().paste(hero_icon, (10, text_height))
+            self.__image_writer.get_image().paste(hero_icon, (10, player_text_height))
+            player_indent += 50
+
+        player_indent += 70
+        for player in m_info.dire_team:
+            player_text_height = text_height + player_indent
+            hero_icon = Image.open(self.__parser.get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
+            self.__image_writer.write_text((80, player_text_height), player.nickname)
+            self.__image_writer.write_text((380, player_text_height), f'{player.kills}')
+            self.__image_writer.write_text((405, player_text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((430, player_text_height), f'{player.assists}')
+            self.__image_writer.write_text((460, player_text_height), num_to_k(player.net_worth), color=self.__settings.text_color.gold)
+            self.__image_writer.write_text((520, player_text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((560, player_text_height), f'{player.denies}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((595, player_text_height), num_to_k(player.gpm), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((635, player_text_height), num_to_k(player.xpm), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((677, player_text_height), num_to_k(player.hero_damage), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((770, player_text_height), num_to_k(player.hero_heal), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((835, player_text_height), num_to_k(player.tower_damage), color=self.__settings.text_color.grey)
+
+            item_indent = 0
+            for item_id in player.items:
+                if item_id != 0:
+                    item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(item_id)).resize((38, 28))
+                    self.__image_writer.get_image().paste(item_icon, (940 + item_indent, player_text_height))
+                item_indent += 40
+
+            if player.neutral_item_id != 0:
+                neutral_item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(player.neutral_item_id)).resize((38, 28))
+                self.__image_writer.get_image().paste(neutral_item_icon, (950 + item_indent, player_text_height))
+
+            self.__image_writer.get_image().paste(hero_icon, (10, player_text_height))
+            player_indent += 50
         return self.__image_writer.get_image()
 
 
@@ -238,4 +299,5 @@ class image_generator:
 
     def generate_last_match_statistics(self, parser, m_info: match_info):
         generator = statistics_image_generator(self.__settings, parser)
+        # generator.generate_match_info_template()
         return generator.generate_last_match_info_image(m_info)

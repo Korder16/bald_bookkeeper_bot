@@ -26,7 +26,8 @@ class player_info:
 @dataclass
 class match_info:
     id: int
-    players: List[player_info]
+    radiant_team: List[player_info]
+    dire_team: List[player_info]
     start_time: int
     duration: int
     game_mode_id: int
