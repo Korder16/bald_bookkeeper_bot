@@ -137,6 +137,36 @@ class statistics_image_generator:
         img.save('media/template.webp')
 
     def generate_last_match_info_image(self, m_info: match_info):
+
+        def fill_info_about_player(player, text_height):
+            hero_icon = Image.open(self.__parser.get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
+            self.__image_writer.write_text((80, text_height), player.nickname)
+            self.__image_writer.write_text((380, text_height), f'{player.kills}')
+            self.__image_writer.write_text((405, text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((430, text_height), f'{player.assists}')
+            self.__image_writer.write_text((460, text_height), num_to_k(player.net_worth), color=self.__settings.text_color.gold)
+            self.__image_writer.write_text((520, text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((560, text_height), f'{player.denies}', color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((595, text_height), num_to_k(player.gpm), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((635, text_height), num_to_k(player.xpm), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((677, text_height), num_to_k(player.hero_damage), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((770, text_height), num_to_k(player.hero_heal), color=self.__settings.text_color.grey)
+            self.__image_writer.write_text((835, text_height), num_to_k(player.tower_damage), color=self.__settings.text_color.grey)
+
+            item_indent = 0
+            for item_id in player.items:
+                if item_id != 0:
+                    item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(item_id)).resize((38, 28))
+                    self.__image_writer.get_image().paste(item_icon, (940 + item_indent, text_height))
+                item_indent += 40
+
+            if player.neutral_item_id != 0:
+                neutral_item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(player.neutral_item_id)).resize((38, 28))
+                self.__image_writer.get_image().paste(neutral_item_icon, (950 + item_indent, text_height))
+
+            self.__image_writer.get_image().paste(hero_icon, (10, text_height))
+
+
         self.__image_writer = image_writer(self.__settings, 'media/template.webp')
 
         title_text_height = 5
@@ -166,63 +196,13 @@ class statistics_image_generator:
         player_indent = 0
         for player in m_info.radiant_team:
             player_text_height = text_height + player_indent
-            hero_icon = Image.open(self.__parser.get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
-            self.__image_writer.write_text((80, player_text_height), player.nickname)
-            self.__image_writer.write_text((380, player_text_height), f'{player.kills}')
-            self.__image_writer.write_text((405, player_text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((430, player_text_height), f'{player.assists}')
-            self.__image_writer.write_text((460, player_text_height), num_to_k(player.net_worth), color=self.__settings.text_color.gold)
-            self.__image_writer.write_text((520, player_text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((560, player_text_height), f'{player.denies}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((595, player_text_height), num_to_k(player.gpm), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((635, player_text_height), num_to_k(player.xpm), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((677, player_text_height), num_to_k(player.hero_damage), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((770, player_text_height), num_to_k(player.hero_heal), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((835, player_text_height), num_to_k(player.tower_damage), color=self.__settings.text_color.grey)
-
-            item_indent = 0
-            for item_id in player.items:
-                if item_id != 0:
-                    item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(item_id)).resize((38, 28))
-                    self.__image_writer.get_image().paste(item_icon, (940 + item_indent, player_text_height))
-                item_indent += 40
-
-            if player.neutral_item_id != 0:
-                neutral_item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(player.neutral_item_id)).resize((38, 28))
-                self.__image_writer.get_image().paste(neutral_item_icon, (950 + item_indent, player_text_height))
-
-            self.__image_writer.get_image().paste(hero_icon, (10, player_text_height))
+            fill_info_about_player(player, player_text_height)
             player_indent += 50
 
         player_indent += 70
         for player in m_info.dire_team:
             player_text_height = text_height + player_indent
-            hero_icon = Image.open(self.__parser.get_hero_icon_path_by_id(player.hero_id)).resize((43, 24))
-            self.__image_writer.write_text((80, player_text_height), player.nickname)
-            self.__image_writer.write_text((380, player_text_height), f'{player.kills}')
-            self.__image_writer.write_text((405, player_text_height), f'{player.deaths}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((430, player_text_height), f'{player.assists}')
-            self.__image_writer.write_text((460, player_text_height), num_to_k(player.net_worth), color=self.__settings.text_color.gold)
-            self.__image_writer.write_text((520, player_text_height), f'{player.last_hits}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((560, player_text_height), f'{player.denies}', color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((595, player_text_height), num_to_k(player.gpm), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((635, player_text_height), num_to_k(player.xpm), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((677, player_text_height), num_to_k(player.hero_damage), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((770, player_text_height), num_to_k(player.hero_heal), color=self.__settings.text_color.grey)
-            self.__image_writer.write_text((835, player_text_height), num_to_k(player.tower_damage), color=self.__settings.text_color.grey)
-
-            item_indent = 0
-            for item_id in player.items:
-                if item_id != 0:
-                    item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(item_id)).resize((38, 28))
-                    self.__image_writer.get_image().paste(item_icon, (940 + item_indent, player_text_height))
-                item_indent += 40
-
-            if player.neutral_item_id != 0:
-                neutral_item_icon = Image.open(self.__parser.get_item_icon_path_by_item_id(player.neutral_item_id)).resize((38, 28))
-                self.__image_writer.get_image().paste(neutral_item_icon, (950 + item_indent, player_text_height))
-
-            self.__image_writer.get_image().paste(hero_icon, (10, player_text_height))
+            fill_info_about_player(player, player_text_height)
             player_indent += 50
         return self.__image_writer.get_image()
 
