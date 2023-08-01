@@ -50,7 +50,6 @@ class opendota_api_client:
         last_ranked_match_info = await asyncio.gather(*[asyncio.ensure_future(self.get_last_ranked_match_info(last_match_id[-1]))])
         return last_ranked_match_info[-1]
 
-
     async def get_allies_statistics_json(self, user_id: str):
 
         dota_user_id = user_infos[user_id].dota_id
