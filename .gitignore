@@ -1,5 +1,4 @@
 media
 .env
 __pycache__
-fonts
 user_infos.json

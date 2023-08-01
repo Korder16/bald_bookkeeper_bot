@@ -1,8 +1,7 @@
 import json
 import io
 
-from .dota_models import match_info, player_info, allies_statistics, ally_info
-from ..image_generator import image_generator, statistics_image_generator, image_generator_settings, dota_objects_parser, fonts, text_colors
+from .dota_models import match_info, player_info
 from .dota_api_client import get_last_match_json, get_allies_statistics_json
 from ..user_infos import user_infos
 
@@ -55,8 +54,8 @@ def parse_last_match(last_match: json):
             player['isRadiant']
         ))
 
-    radiant_team = [player for player in match_players if player.team == True]
-    dire_team = [player for player in match_players if player.team == False]
+    radiant_team = [player for player in match_players if player.team is True]
+    dire_team = [player for player in match_players if player.team is False]
 
     return (match_info(
         last_match['match_id'],
@@ -69,37 +68,15 @@ def parse_last_match(last_match: json):
         last_match['dire_score'],
         last_match['radiant_score']
     ),
-    (player_team == 'radiant' and last_match['radiant_win']) or (player_team == 'dire' and not last_match['radiant_win']) )
-
+        (player_team == 'radiant' and last_match['radiant_win']) or (player_team == 'dire' and not last_match['radiant_win']))
 
 
 async def get_last_match_results(user_id: str):
     last_match = await get_last_match_json(user_id)
 
     match_info, is_win = parse_last_match(last_match)
-    settings = image_generator_settings()
-    parser = dota_objects_parser('configs/heroes_ids.json', 'configs/item_ids.json', 'configs/game_mode.json')
-
-    match_info_image = image_generator(settings).generate_last_match_statistics(parser, match_info)
-    return image_to_bytes(match_info_image), is_win
-
-
-def parse_allies_statistics(user_id: str, statistics: json):
-    user_dota_ids = [user_info.dota_id for user_info in user_infos.values()]
-    filtered_statistics = list(filter(lambda stat: stat['account_id'] in user_dota_ids, statistics))
-
-    allies = []
-    for stat in filtered_statistics:
-        allies.append(ally_info(stat['avatar'], stat['personaname'], stat['games'], stat['win']))
-
-    stats = allies_statistics(user_infos[user_id].name, allies)
-
-    settings = image_generator_settings(width=400, height=300)
-    allies_statistics_image = image_generator(settings).generate_allies_statistics(stats)
-
-    return image_to_bytes(allies_statistics_image)
+    return match_info.to_json(), is_win
 
 
 async def get_allies_info_for_last_two_weeks(user_id: str):
-    allies_statistics = await get_allies_statistics_json(user_id)
-    return parse_allies_statistics(user_id, allies_statistics)
+    return await get_allies_statistics_json(user_id)

@@ -3,8 +3,10 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
+from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient, image_to_bytes
 import random
+from src import image_api_generator_client
+import json
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -16,6 +18,7 @@ bot_token = getenv("BALD_BOOKKEEPER_BOT_TOKEN")
 
 if not bot_token:
     exit('Error: no token provided')
+
 
 bot = Bot(token=bot_token)
 dp = Dispatcher(bot)
@@ -97,9 +100,11 @@ async def salary(message: types.Message):
 @dp.message_handler(commands='стата')
 async def last_game(message: types.Message):
     user_id = str(message.from_user.id)
-    match_info_image, is_win = await get_last_match_results(user_id)
+    match_info, is_win = await get_last_match_results(user_id)
 
-    await message.answer_photo(match_info_image)
+    client = image_api_generator_client()
+    response_image = client.get_last_game_statistics_image(match_info)
+    await message.answer_photo(response_image)
 
     if is_win:
         photo_name = 'miracle'
@@ -108,11 +113,14 @@ async def last_game(message: types.Message):
     with open(f'media/{photo_name}.webp', 'rb') as photo:
         await message.answer_photo(photo)
 
+
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
-    match_info_image, is_win = await get_last_match_results('234173758')
+    match_info, is_win = await get_last_match_results('234173758')
 
-    await message.answer_photo(match_info_image)
+    client = image_api_generator_client()
+    response_image = client.get_last_game_statistics_image(match_info)
+    await message.answer_photo(response_image)
 
     if is_win:
         photo_name = 'miracle'
@@ -125,9 +133,26 @@ async def not_today(message: types.Message):
 @dp.message_handler(commands='кенты')
 async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
-    statistics_image = await get_allies_info_for_last_two_weeks(user_id)
+    aliies_info = await get_allies_info_for_last_two_weeks(user_id)
 
-    await message.answer_photo(statistics_image)
+    data = {}
+    statistics = {}
+
+    data['user_id'] = user_id
+    data['statistics'] = []
+
+    statistics['account_id'] = aliies_info[-1]['account_id']
+    statistics['win'] = aliies_info[-1]['win']
+    statistics['games'] = aliies_info[-1]['games']
+    statistics['personaname'] = aliies_info[-1]['personaname']
+    statistics['avatar'] = aliies_info[-1]['avatar']
+    data['statistics'].append(statistics)
+
+    data_json = json.dumps(data)
+
+    client = image_api_generator_client()
+    response_image = client.get_teammates_statistics_image(data_json)
+    await message.answer_photo(response_image)
 
 
 @dp.message_handler(commands='время')
