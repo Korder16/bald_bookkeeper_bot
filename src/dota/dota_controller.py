@@ -2,7 +2,7 @@ import json
 import io
 
 from .dota_models import match_info, player_info
-from .dota_api_client import get_last_match_json, get_allies_statistics_json
+from .opendota_api_client import opendota_api_client
 from ..user_infos import user_infos
 
 
@@ -72,11 +72,13 @@ def parse_last_match(last_match: json):
 
 
 async def get_last_match_results(user_id: str):
-    last_match = await get_last_match_json(user_id)
+    client = opendota_api_client()
+    last_match = await client.get_last_match_json(user_id)
 
     match_info, is_win = parse_last_match(last_match)
     return match_info.to_json(), is_win
 
 
 async def get_allies_info_for_last_two_weeks(user_id: str):
-    return await get_allies_statistics_json(user_id)
+    client = opendota_api_client()
+    return await client.get_allies_statistics_json(user_id)
