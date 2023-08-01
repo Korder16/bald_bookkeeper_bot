@@ -1,4 +1,4 @@
-import requests
+from aiohttp import ClientSession
 import json
 import base64
 import io
@@ -14,14 +14,22 @@ class image_api_generator_client:
     def __make_url(self):
         return f'http://{self.__url}:{self.__port}'
 
-    def get_last_game_statistics_image(self, match_info: json) -> io.BytesIO:
+    async def get_last_game_statistics_image(self, match_info: json) -> io.BytesIO:
         url = self.__make_url()
 
-        response = requests.get(f'{url}/statistics/last_game', json=match_info, headers=self.__headers)
-        return io.BytesIO(base64.b64decode(response.json())).getvalue()
+        endpoint = '/statistics/last_game'
 
-    def get_teammates_statistics_image(self, allies_info: json):
+        async with ClientSession() as session:
+            async with session.get(url=f'{url}{endpoint}', json=match_info, headers=self.__headers) as response:
+                response = await response.json(content_type='text/html')
+                return io.BytesIO(base64.b64decode(response)).getvalue()
+
+    async def get_teammates_statistics_image(self, allies_info: json):
         url = self.__make_url()
 
-        response = requests.get(f'{url}/statistics/teammates', json=allies_info, headers=self.__headers)
-        return io.BytesIO(base64.b64decode(response.json())).getvalue()
+        endpoint = '/statistics/teammates'
+
+        async with ClientSession() as session:
+            async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers) as response:
+                response = await response.json(content_type='text/html')
+                return io.BytesIO(base64.b64decode(response)).getvalue()

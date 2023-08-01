@@ -103,7 +103,7 @@ async def last_game(message: types.Message):
     match_info, is_win = await get_last_match_results(user_id)
 
     client = image_api_generator_client()
-    response_image = client.get_last_game_statistics_image(match_info)
+    response_image = await client.get_last_game_statistics_image(match_info)
     await message.answer_photo(response_image)
 
     if is_win:
@@ -119,7 +119,7 @@ async def not_today(message: types.Message):
     match_info, is_win = await get_last_match_results('234173758')
 
     client = image_api_generator_client()
-    response_image = client.get_last_game_statistics_image(match_info)
+    response_image = await client.get_last_game_statistics_image(match_info)
     await message.answer_photo(response_image)
 
     if is_win:
@@ -151,7 +151,7 @@ async def teammates(message: types.Message):
     data_json = json.dumps(data)
 
     client = image_api_generator_client()
-    response_image = client.get_teammates_statistics_image(data_json)
+    response_image = await client.get_teammates_statistics_image(data_json)
     await message.answer_photo(response_image)
 
 
