@@ -1,15 +1,8 @@
 import json
-import io
 
 from .dota_models import match_info, player_info
 from .opendota_api_client import opendota_api_client
 from ..user_infos import user_infos
-
-
-def image_to_bytes(img):
-    img_bytes = io.BytesIO()
-    img.save(img_bytes, format='webp')
-    return img_bytes.getvalue()
 
 
 def parse_last_match(last_match: json):
