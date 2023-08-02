@@ -24,12 +24,14 @@ class image_api_generator_client:
                 response = await response.json(content_type='text/html')
                 return io.BytesIO(base64.b64decode(response)).getvalue()
 
-    async def get_teammates_statistics_image(self, allies_info: json):
+    async def get_teammates_statistics_image(self, user_id: str, allies_info: json):
         url = self.__make_url()
 
         endpoint = '/statistics/teammates'
 
+        params = {'user_id' : user_id}
+
         async with ClientSession() as session:
-            async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers) as response:
+            async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers, params=params) as response:
                 response = await response.json(content_type='text/html')
                 return io.BytesIO(base64.b64decode(response)).getvalue()

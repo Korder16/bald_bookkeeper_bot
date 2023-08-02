@@ -135,24 +135,8 @@ async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
     allies_info = await get_allies_info_for_last_two_weeks(user_id)
 
-    data = {}
-    statistics = {}
-
-    data['user_id'] = user_id
-    data['statistics'] = []
-
-    if allies_info:
-        statistics['account_id'] = allies_info[-1]['account_id']
-        statistics['win'] = allies_info[-1]['win']
-        statistics['games'] = allies_info[-1]['games']
-        statistics['personaname'] = allies_info[-1]['personaname']
-        statistics['avatar'] = allies_info[-1]['avatar']
-        data['statistics'].append(statistics)
-
-    data_json = json.dumps(data)
-
     client = image_api_generator_client()
-    response_image = await client.get_teammates_statistics_image(data_json)
+    response_image = await client.get_teammates_statistics_image(user_id, allies_info)
     await message.answer_photo(response_image)
 
 
