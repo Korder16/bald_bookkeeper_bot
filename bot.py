@@ -133,7 +133,7 @@ async def not_today(message: types.Message):
 @dp.message_handler(commands='кенты')
 async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
-    aliies_info = await get_allies_info_for_last_two_weeks(user_id)
+    allies_info = await get_allies_info_for_last_two_weeks(user_id)
 
     data = {}
     statistics = {}
@@ -141,12 +141,13 @@ async def teammates(message: types.Message):
     data['user_id'] = user_id
     data['statistics'] = []
 
-    statistics['account_id'] = aliies_info[-1]['account_id']
-    statistics['win'] = aliies_info[-1]['win']
-    statistics['games'] = aliies_info[-1]['games']
-    statistics['personaname'] = aliies_info[-1]['personaname']
-    statistics['avatar'] = aliies_info[-1]['avatar']
-    data['statistics'].append(statistics)
+    if allies_info:
+        statistics['account_id'] = allies_info[-1]['account_id']
+        statistics['win'] = allies_info[-1]['win']
+        statistics['games'] = allies_info[-1]['games']
+        statistics['personaname'] = allies_info[-1]['personaname']
+        statistics['avatar'] = allies_info[-1]['avatar']
+        data['statistics'].append(statistics)
 
     data_json = json.dumps(data)
 
