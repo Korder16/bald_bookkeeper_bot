@@ -2,6 +2,7 @@ from aiohttp import ClientSession
 import asyncio
 from ..sql_client import bald_bookeeper_bot_db_client
 
+
 class opendota_api_client:
 
     def __init__(self) -> None:

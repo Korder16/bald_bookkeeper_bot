@@ -1,6 +1,7 @@
 import psycopg2
 from os import getenv
 
+
 def connect_db():
     try:
         return psycopg2.connect(
@@ -30,7 +31,6 @@ class bald_bookeeper_bot_db_client:
 
                 return cursor.fetchone()[0]
 
-
     def get_stop_working_hour_by_tg_id(self, id: int):
         sql_query = f'select w.stop_working_hour from works w, telegram_accounts t where t.telegram_id = {id} and w.id = t.id'
 
@@ -54,7 +54,7 @@ class bald_bookeeper_bot_db_client:
                 return cursor.fetchone()[0]
 
     def get_all_dota_ids(self) -> list:
-        sql_query = f'select dota_account_id from dota_accounts'
+        sql_query = 'select dota_account_id from dota_accounts'
 
         with self.__connection as connection:
             with connection.cursor() as cursor:

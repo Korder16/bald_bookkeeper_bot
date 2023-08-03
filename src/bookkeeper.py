@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from random import choice
 from .sql_client import bald_bookeeper_bot_db_client
 
+
 def is_rashid_relaxing():
     return not is_now_working_time(18)
 

@@ -4,6 +4,7 @@ from .dota_models import match_info, player_info
 from .opendota_api_client import opendota_api_client
 from ..sql_client import bald_bookeeper_bot_db_client
 
+
 def parse_last_match(last_match: json):
     players = last_match['players']
 

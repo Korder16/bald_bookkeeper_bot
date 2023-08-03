@@ -29,7 +29,7 @@ class image_api_generator_client:
 
         endpoint = '/statistics/teammates'
 
-        params = {'user_id' : user_id}
+        params = {'user_id': user_id}
 
         async with ClientSession() as session:
             async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers, params=params) as response:
