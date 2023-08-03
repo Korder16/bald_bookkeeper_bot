@@ -2,13 +2,13 @@ from aiohttp import ClientSession
 import json
 import base64
 import io
-
+from os import getenv
 
 class image_api_generator_client:
 
     def __init__(self) -> None:
-        self.__url = '185.189.167.54'
-        self.__port = 5001
+        self.__url = getenv("IMAGE_GENERATOR_API_URL")
+        self.__port = getenv("IMAGE_GENERATOR_API_PORT")
         self.__headers = {'Content-type': 'application/json'}
 
     def __make_url(self):
