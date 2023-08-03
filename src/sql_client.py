@@ -24,8 +24,8 @@ class bald_bookeeper_bot_db_client:
             host=getenv("DB_HOST")
         )
 
-    def __del__(self):
-        self.__connection.close()
+    # def __del__(self):
+        # self.__connection.close()
 
     def get_username_by_tg_id(self, id: int) -> str:
         sql_query = f'select u.name from users u, telegram_accounts t where t.telegram_id = {id} and t.id = u.id'
