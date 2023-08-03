@@ -1,18 +1,18 @@
-from .user_infos import user_infos
 from .datetime_utils import get_day_of_week, get_hours_until_end_of_work, is_now_working_time, is_weekend
 from .emoji_generator import get_emoji_number, get_emoji_by_alias, emojis
 from .stickers import sticker_ids
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from random import choice
-
+from .sql_client import bald_bookeeper_bot_db_client
 
 def is_rashid_relaxing():
     return not is_now_working_time(18)
 
 
 def make_user_message(user_id: int):
-    username = user_infos[user_id].name
+    db_client = bald_bookeeper_bot_db_client()
+    username = db_client.get_username_by_tg_id(user_id)
 
     warning_emoji = get_emoji_by_alias(emojis['warning'])
     return f'{warning_emoji}{username}{warning_emoji}'
@@ -66,8 +66,10 @@ def get_days_until_weekend_message(day_of_week: int):
         return make_day_of_week_message(beach_emoji, day_of_week)
 
 
-def get_today_info_message(user_id: str):
-    stop_working_hour = user_infos[user_id].stop_working_hour
+def get_today_info_message(user_id: int):
+    db_client = bald_bookeeper_bot_db_client()
+    stop_working_hour = db_client.get_stop_working_hour_by_tg_id(user_id)
+
     day_of_week = get_day_of_week()
     message_tokens = [
         make_user_message(user_id),

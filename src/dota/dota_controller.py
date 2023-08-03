@@ -2,20 +2,20 @@ import json
 
 from .dota_models import match_info, player_info
 from .opendota_api_client import opendota_api_client
-from ..user_infos import user_infos
-
+from ..sql_client import bald_bookeeper_bot_db_client
 
 def parse_last_match(last_match: json):
     players = last_match['players']
 
     player_team = 'radiant'
-
+    client = bald_bookeeper_bot_db_client()
+    all_dota_ids = client.get_all_dota_ids()
     match_players = []
     for player in players:
         player_name = 'бомж'
-        for user_info in user_infos.values():
-            if player['account_id'] == user_info.dota_id:
-                player_name = user_info.name
+        for dota_id in all_dota_ids:
+            if player['account_id'] == dota_id:
+                player_name = client.get_username_by_dota_id(dota_id)
 
                 if not player['isRadiant']:
                     player_team = 'dire'

@@ -1,7 +1,6 @@
 from aiohttp import ClientSession
 import asyncio
-from ..user_infos import user_infos
-
+from ..sql_client import bald_bookeeper_bot_db_client
 
 class opendota_api_client:
 
@@ -38,7 +37,9 @@ class opendota_api_client:
                 return await response.json()
 
     async def get_last_match_json(self, user_id: str):
-        dota_user_id = user_infos[user_id].dota_id
+        db_client = bald_bookeeper_bot_db_client()
+        dota_user_id = db_client.get_dota_id_by_tg_id(user_id)
+
         last_match_id = ''
 
         tasks = [
@@ -52,7 +53,8 @@ class opendota_api_client:
 
     async def get_allies_statistics_json(self, user_id: str):
 
-        dota_user_id = user_infos[user_id].dota_id
+        db_client = bald_bookeeper_bot_db_client()
+        dota_user_id = db_client.get_dota_id_by_tg_id(user_id)
 
         tasks = [
             asyncio.ensure_future(self.update_last_match_info(dota_user_id)),

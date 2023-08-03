@@ -3,10 +3,9 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_last_match_results, parse_user_config, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
+from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
 import random
 from src import image_api_generator_client
-import json
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -142,7 +141,7 @@ async def teammates(message: types.Message):
 
 @dp.message_handler(commands='время')
 async def get_time(message: types.Message):
-    user_id = str(message.from_user.id)
+    user_id = message.from_user.id
     await message.answer(get_today_info_message(user_id))
     await message.answer_sticker(get_mr_incredible_sticker())
 
@@ -196,5 +195,4 @@ async def work_hard(message: types.Message):
     await message.answer(random.choice(work_urls))
 
 if __name__ == "__main__":
-    parse_user_config()
     executor.start_polling(dp, skip_updates=True)
