@@ -20,8 +20,7 @@ class bald_bookeeper_bot_db_client:
         self.__connection = psycopg2.connect(
             database=getenv("DB_NAME"),
             user=getenv("DB_USER"),
-            password=getenv("DB_PASSWORD"),
-            host=getenv("DB_HOST")
+            password=getenv("DB_PASSWORD")
         )
 
     # def __del__(self):
