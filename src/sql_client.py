@@ -3,15 +3,15 @@ from os import getenv
 
 
 def connect_db():
-    # try:
-    return psycopg2.connect(
-        database=getenv("DB_NAME"),
-        user=getenv("DB_USER"),
-        password=getenv("DB_PASSWORD"),
-        host=getenv("DB_HOST")
-    )
-    # except:
-        # print('Cannot connect to db')
+    try:
+        return psycopg2.connect(
+            database=getenv("DB_NAME"),
+            user=getenv("DB_USER"),
+            password=getenv("DB_PASSWORD"),
+            host=getenv("DB_HOST")
+        )
+    except:
+        print('Cannot connect to db')
 
 
 class bald_bookeeper_bot_db_client:
