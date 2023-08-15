@@ -4,6 +4,7 @@ import base64
 import io
 from os import getenv
 
+
 class image_api_generator_client:
 
     def __init__(self) -> None:
