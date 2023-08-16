@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
 import random
 from src import image_api_generator_client
+from src.sql_client import bald_bookeeper_bot_db_client
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -21,6 +22,8 @@ if not bot_token:
 
 bot = Bot(token=bot_token)
 dp = Dispatcher(bot)
+
+client = bald_bookeeper_bot_db_client()
 
 logging.basicConfig(level=logging.INFO)
 
