@@ -9,14 +9,14 @@ def parse_last_match(last_match: json):
     players = last_match['players']
 
     player_team = 'radiant'
-    client = bald_bookeeper_bot_db_client()
-    all_dota_ids = client.get_all_dota_ids()
+    db_client = bald_bookeeper_bot_db_client()
+    all_dota_ids = db_client.get_all_dota_ids()
     match_players = []
     for player in players:
         player_name = 'бомж'
         for dota_id in all_dota_ids:
             if player['account_id'] == dota_id:
-                player_name = client.get_username_by_dota_id(dota_id)
+                player_name = db_client.get_username_by_dota_id(dota_id)
 
                 if not player['isRadiant']:
                     player_team = 'dire'

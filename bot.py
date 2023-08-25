@@ -23,7 +23,6 @@ if not bot_token:
 bot = Bot(token=bot_token)
 dp = Dispatcher(bot)
 
-client = bald_bookeeper_bot_db_client()
 
 logging.basicConfig(level=logging.INFO)
 
