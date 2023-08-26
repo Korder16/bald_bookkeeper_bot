@@ -70,21 +70,22 @@ async def sigame_poll(message: types.Message):
 
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    with open('media/rama.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+    await message.answer_photo(photo='AgACAgIAAxkDAAIGhmTqKVYAASg13SzJQx2K3Jq1bTB2VgAC8tAxG-seUUuY_kr72WW8YQEAAwIAA3MAAzAE')
 
 
 @dp.message_handler(commands='клоун')
 async def show_clown(message: types.Message):
-    with open('media/clown.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+    await message.answer_photo(photo='AgACAgIAAxkDAAIGd2TqKDlyyvSjxvc2X61T3xDs8KRWAALp0DEb6x5RS8l2f--imoymAQADAgADcwADMAQ')
 
 
 @dp.message_handler(commands='дура')
 async def show_dura(message: types.Message):
-    dura_images = ['media/clown.webp', 'media/dura.webp']
-    with open(random.choice(dura_images), 'rb') as photo:
-        await message.answer_photo(photo)
+    dura_images = [
+        'AgACAgIAAxkDAAIGe2TqKJvzQmtW0zgu2lXWQnsp0EntAALr0DEb6x5RS3rG5H9D0t5aAQADAgADcwADMAQ',
+        'AgACAgIAAxkDAAIGd2TqKDlyyvSjxvc2X61T3xDs8KRWAALp0DEb6x5RS8l2f--imoymAQADAgADcwADMAQ'
+    ]
+
+    await message.answer_photo(photo=random.choice(dura_images))
 
 
 @dp.message_handler(commands='домой')
@@ -107,11 +108,11 @@ async def last_game(message: types.Message):
     await message.answer_photo(response_image)
 
     if is_win:
-        photo_name = 'miracle'
+        photo_name = 'AgACAgIAAxkDAAIGZGTqJLIDX22vPwABduYLR8b1vZvQrgAClssxGw8uQUuOSnCweNGOBgEAAwIAA3MAAzAE'
     else:
-        photo_name = 'golovach'
-    with open(f'media/{photo_name}.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+        photo_name = 'AgACAgIAAxkDAAIGb2TqJ4er20mgVZ1ppTjFQwYCk3OHAALj0DEb6x5RSzuzcTKdWwpBAQADAgADcwADMAQ'
+
+    await message.answer_photo(photo=photo_name)
 
 
 @dp.message_handler(commands='не_сегодня')
@@ -123,14 +124,13 @@ async def not_today(message: types.Message):
     await message.answer_photo(response_image)
 
     if is_win:
-        photo_name = 'miracle'
+        photo_name = 'AgACAgIAAxkDAAIGZGTqJLIDX22vPwABduYLR8b1vZvQrgAClssxGw8uQUuOSnCweNGOBgEAAwIAA3MAAzAE'
     else:
-        photo_name = 'golovach'
-    with open(f'media/{photo_name}.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+        photo_name = 'AgACAgIAAxkDAAIGb2TqJ4er20mgVZ1ppTjFQwYCk3OHAALj0DEb6x5RSzuzcTKdWwpBAQADAgADcwADMAQ'
+
+    await message.answer_photo(photo=photo_name)
 
 
-@dp.message_handler(commands='кенты')
 async def teammates(message: types.Message):
     user_id = str(message.from_user.id)
     allies_info = await get_allies_info_for_last_two_weeks(user_id)
@@ -149,8 +149,7 @@ async def get_time(message: types.Message):
 
 @dp.message_handler(commands='белка')
 async def squirrel(message: types.Message):
-    with open('media/squirrel.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+    await message.answer_photo(photo='AgACAgIAAxkDAAIGmWTqKkSm1T9A-8TrnlBSfD2yOhWAAAL20DEb6x5RS4hVGetdDlD1AQADAgADcwADMAQ')
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
@@ -159,26 +158,27 @@ async def ibragym(message: types.Message):
     user_id = str(message.from_user.id)
 
     if user_id == '207565268':
-        with open('media/rock.mp4', 'rb') as gif:
-            await message.answer_animation(gif)
+        await message.answer_animation(animation='CgACAgIAAxkDAAIGsmTqK5CYY2ii5O-eYnfD87EjAy__AAJdOwAC6x5RSyauUj9f2-YMMAQ')
     else:
-        ibragym_images = ['media/ibragym.webp', 'media/ibragym_2.webp', 'media/ibragym_3.webp']
-        with open(random.choice(ibragym_images), 'rb') as photo:
-            await message.answer_photo(photo)
+        ibragym_images = [
+            'AgACAgIAAxkDAAIGnGTqKsH8nQqsXbewfgg8SjiwqWrCAAL30DEb6x5RS12Zy_xipJpuAQADAgADcwADMAQ',
+            'AgACAgIAAxkDAAIGnmTqKtJI1G4n0lBjP8aMNa1ozZGvAAL40DEb6x5RS2NqgtLDqWEuAQADAgADcwADMAQ',
+            'AgACAgIAAxkDAAIGoGTqKunTA7wLRld7nuZjGWjnwm7NAAL50DEb6x5RS_Ljy64XejF0AQADAgADcwADMAQ'
+        ]
+
+        await message.answer_photo(photo=random.choice(ibragym_images))
 
 
 @dp.message_handler(commands='дуза')
 async def medusa(message: types.Message):
-    with open('media/medusa.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+    await message.answer_photo(photo='AgACAgIAAxkDAAIGk2TqKfsZiL9jN9vXEUJd3JpECeaYAAL10DEb6x5RS0c43nPHIAiRAQADAgADcwADMAQ')
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @dp.message_handler(commands='марафон')
 async def marathon(message: types.Message):
     await message.answer(count_days_without_marathon())
-    with open('media/marathon_promise.webp', 'rb') as photo:
-        await message.answer_photo(photo)
+    await message.answer_photo(photo='AgACAgIAAxkDAAIGi2TqKaBX7E-Hrzd6DjJsoG-ZR5E9AAL00DEb6x5RS-_BR15sVVV0AQADAgADcwADMAQ')
 
 
 @dp.message_handler(commands='властелин')
@@ -193,7 +193,7 @@ async def work_hard(message: types.Message):
         'https://youtube.com/shorts/SCO2LHHY14o?feature=share'
     ]
 
-    await message.answer(random.choice(work_urls))
+    await message.answer_video(random.choice(work_urls))
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
