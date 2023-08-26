@@ -15,13 +15,13 @@ class image_api_generator_client:
     def __make_url(self):
         return f'http://{self.__url}:{self.__port}'
 
-    async def get_last_game_statistics_image(self, match_info: json) -> io.BytesIO:
+    async def get_last_game_statistics_image(self, last_match_results: json) -> io.BytesIO:
         url = self.__make_url()
 
         endpoint = '/statistics/last_game'
 
         async with ClientSession() as session:
-            async with session.get(url=f'{url}{endpoint}', json=match_info, headers=self.__headers) as response:
+            async with session.get(url=f'{url}{endpoint}', json=last_match_results, headers=self.__headers) as response:
                 response = await response.json(content_type='text/html')
                 return io.BytesIO(base64.b64decode(response)).getvalue()
 

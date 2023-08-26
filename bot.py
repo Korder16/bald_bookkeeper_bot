@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
 import random
 from src import image_api_generator_client
-from src.sql_client import bald_bookeeper_bot_db_client
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -101,10 +100,10 @@ async def salary(message: types.Message):
 @dp.message_handler(commands='стата')
 async def last_game(message: types.Message):
     user_id = str(message.from_user.id)
-    match_info, is_win = await get_last_match_results(user_id)
+    last_match_results, is_win = await get_last_match_results(user_id)
 
     client = image_api_generator_client()
-    response_image = await client.get_last_game_statistics_image(match_info)
+    response_image = await client.get_last_game_statistics_image(last_match_results)
     await message.answer_photo(response_image)
 
     if is_win:
