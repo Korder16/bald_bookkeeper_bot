@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
 import random
 from src import image_api_generator_client
+from src.photos import photo_ids
+from src.animations import animation_ids
+
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -22,6 +25,8 @@ if not bot_token:
 bot = Bot(token=bot_token)
 dp = Dispatcher(bot)
 
+current_photo_ids = photo_ids[getenv("BOT_TYPE")]
+current_animation_ids = animation_ids[getenv("BOT_TYPE")]
 
 logging.basicConfig(level=logging.INFO)
 
@@ -70,22 +75,17 @@ async def sigame_poll(message: types.Message):
 
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    await message.answer_photo(photo='AgACAgIAAxkDAAIGhmTqKVYAASg13SzJQx2K3Jq1bTB2VgAC8tAxG-seUUuY_kr72WW8YQEAAwIAA3MAAzAE')
+    await message.answer_photo(photo=current_photo_ids['rama'])
 
 
 @dp.message_handler(commands='клоун')
 async def show_clown(message: types.Message):
-    await message.answer_photo(photo='AgACAgIAAxkDAAIGd2TqKDlyyvSjxvc2X61T3xDs8KRWAALp0DEb6x5RS8l2f--imoymAQADAgADcwADMAQ')
+    await message.answer_photo(photo=current_photo_ids['clown'])
 
 
 @dp.message_handler(commands='дура')
 async def show_dura(message: types.Message):
-    dura_images = [
-        'AgACAgIAAxkDAAIGe2TqKJvzQmtW0zgu2lXWQnsp0EntAALr0DEb6x5RS3rG5H9D0t5aAQADAgADcwADMAQ',
-        'AgACAgIAAxkDAAIGd2TqKDlyyvSjxvc2X61T3xDs8KRWAALp0DEb6x5RS8l2f--imoymAQADAgADcwADMAQ'
-    ]
-
-    await message.answer_photo(photo=random.choice(dura_images))
+    await message.answer_photo(photo=random.choice(current_photo_ids['dura']))
 
 
 @dp.message_handler(commands='домой')
@@ -108,9 +108,9 @@ async def last_game(message: types.Message):
     await message.answer_photo(response_image)
 
     if is_win:
-        photo_name = 'AgACAgIAAxkDAAIGZGTqJLIDX22vPwABduYLR8b1vZvQrgAClssxGw8uQUuOSnCweNGOBgEAAwIAA3MAAzAE'
+        photo_name = current_photo_ids['win_game']
     else:
-        photo_name = 'AgACAgIAAxkDAAIGb2TqJ4er20mgVZ1ppTjFQwYCk3OHAALj0DEb6x5RSzuzcTKdWwpBAQADAgADcwADMAQ'
+        photo_name = current_photo_ids['loose_game']
 
     await message.answer_photo(photo=photo_name)
 
@@ -124,9 +124,9 @@ async def not_today(message: types.Message):
     await message.answer_photo(response_image)
 
     if is_win:
-        photo_name = 'AgACAgIAAxkDAAIGZGTqJLIDX22vPwABduYLR8b1vZvQrgAClssxGw8uQUuOSnCweNGOBgEAAwIAA3MAAzAE'
+        photo_name = current_photo_ids['win_game']
     else:
-        photo_name = 'AgACAgIAAxkDAAIGb2TqJ4er20mgVZ1ppTjFQwYCk3OHAALj0DEb6x5RSzuzcTKdWwpBAQADAgADcwADMAQ'
+        photo_name = current_photo_ids['loose_game']
 
     await message.answer_photo(photo=photo_name)
 
@@ -149,7 +149,7 @@ async def get_time(message: types.Message):
 
 @dp.message_handler(commands='белка')
 async def squirrel(message: types.Message):
-    await message.answer_photo(photo='AgACAgIAAxkDAAIGmWTqKkSm1T9A-8TrnlBSfD2yOhWAAAL20DEb6x5RS4hVGetdDlD1AQADAgADcwADMAQ')
+    await message.answer_photo(photo=current_photo_ids['squirrel'])
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
@@ -158,27 +158,21 @@ async def ibragym(message: types.Message):
     user_id = str(message.from_user.id)
 
     if user_id == '207565268':
-        await message.answer_animation(animation='CgACAgIAAxkDAAIGsmTqK5CYY2ii5O-eYnfD87EjAy__AAJdOwAC6x5RSyauUj9f2-YMMAQ')
+        await message.answer_animation(animation=current_animation_ids['rock'])
     else:
-        ibragym_images = [
-            'AgACAgIAAxkDAAIGnGTqKsH8nQqsXbewfgg8SjiwqWrCAAL30DEb6x5RS12Zy_xipJpuAQADAgADcwADMAQ',
-            'AgACAgIAAxkDAAIGnmTqKtJI1G4n0lBjP8aMNa1ozZGvAAL40DEb6x5RS2NqgtLDqWEuAQADAgADcwADMAQ',
-            'AgACAgIAAxkDAAIGoGTqKunTA7wLRld7nuZjGWjnwm7NAAL50DEb6x5RS_Ljy64XejF0AQADAgADcwADMAQ'
-        ]
-
-        await message.answer_photo(photo=random.choice(ibragym_images))
+        await message.answer_photo(photo=random.choice(current_photo_ids['ibragym_images']))
 
 
 @dp.message_handler(commands='дуза')
 async def medusa(message: types.Message):
-    await message.answer_photo(photo='AgACAgIAAxkDAAIGk2TqKfsZiL9jN9vXEUJd3JpECeaYAAL10DEb6x5RS0c43nPHIAiRAQADAgADcwADMAQ')
+    await message.answer_photo(photo=current_photo_ids['medusa'])
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @dp.message_handler(commands='марафон')
 async def marathon(message: types.Message):
     await message.answer(count_days_without_marathon())
-    await message.answer_photo(photo='AgACAgIAAxkDAAIGi2TqKaBX7E-Hrzd6DjJsoG-ZR5E9AAL00DEb6x5RS-_BR15sVVV0AQADAgADcwADMAQ')
+    await message.answer_photo(photo=current_photo_ids['marathon'])
 
 
 @dp.message_handler(commands='властелин')
@@ -194,6 +188,14 @@ async def work_hard(message: types.Message):
     ]
 
     await message.answer_video(random.choice(work_urls))
+
+@dp.message_handler(content_types=['photo'])
+async def get_id(message: types.Message):
+    await message.answer(message.photo[0].file_id)
+
+@dp.message_handler(content_types=['animation'])
+async def get_id(message: types.Message):
+    await message.answer(message.animation.file_id)
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
