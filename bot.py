@@ -187,15 +187,7 @@ async def work_hard(message: types.Message):
         'https://youtube.com/shorts/SCO2LHHY14o?feature=share'
     ]
 
-    await message.answer_video(random.choice(work_urls))
-
-@dp.message_handler(content_types=['photo'])
-async def get_id(message: types.Message):
-    await message.answer(message.photo[0].file_id)
-
-@dp.message_handler(content_types=['animation'])
-async def get_id(message: types.Message):
-    await message.answer(message.animation.file_id)
+    await message.answer(random.choice(work_urls))
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
