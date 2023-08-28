@@ -6,9 +6,7 @@ from dotenv import load_dotenv
 from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
 import random
 from src import image_api_generator_client
-from src.photos import photo_ids
-from src.animations import animation_ids
-
+from src.sql_client import bald_bookeeper_bot_db_client
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -24,9 +22,6 @@ if not bot_token:
 
 bot = Bot(token=bot_token)
 dp = Dispatcher(bot)
-
-current_photo_ids = photo_ids[getenv("BOT_TYPE")]
-current_animation_ids = animation_ids[getenv("BOT_TYPE")]
 
 logging.basicConfig(level=logging.INFO)
 
@@ -75,17 +70,17 @@ async def sigame_poll(message: types.Message):
 
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    await message.answer_photo(photo=current_photo_ids['rama'])
+    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_rama_file_id())
 
 
 @dp.message_handler(commands='клоун')
 async def show_clown(message: types.Message):
-    await message.answer_photo(photo=current_photo_ids['clown'])
+    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_clown_file_id())
 
 
 @dp.message_handler(commands='дура')
 async def show_dura(message: types.Message):
-    await message.answer_photo(photo=random.choice(current_photo_ids['dura']))
+    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_random_dura_file_id())
 
 
 @dp.message_handler(commands='домой')
@@ -150,7 +145,7 @@ async def get_time(message: types.Message):
 
 @dp.message_handler(commands='белка')
 async def squirrel(message: types.Message):
-    await message.answer_photo(photo=current_photo_ids['squirrel'])
+    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_squirrel_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
@@ -159,21 +154,21 @@ async def ibragym(message: types.Message):
     user_id = str(message.from_user.id)
 
     if user_id == '207565268':
-        await message.answer_animation(animation=current_animation_ids['rock'])
+        await message.answer_animation(animation=bald_bookeeper_bot_db_client().get_squirrel_file_id())
     else:
-        await message.answer_photo(photo=random.choice(current_photo_ids['ibragym_images']))
+        await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_random_ibragym_file_id())
 
 
 @dp.message_handler(commands='дуза')
 async def medusa(message: types.Message):
-    await message.answer_photo(photo=current_photo_ids['medusa'])
+    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_medusa_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @dp.message_handler(commands='марафон')
 async def marathon(message: types.Message):
     await message.answer(count_days_without_marathon())
-    await message.answer_photo(photo=current_photo_ids['marathon'])
+    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_marathon_file_id())
 
 
 @dp.message_handler(commands='властелин')
