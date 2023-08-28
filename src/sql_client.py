@@ -28,7 +28,7 @@ class bald_bookeeper_bot_db_client:
                 return [elem[0] for elem in cursor.fetchall()]
 
     def get_username_by_tg_id(self, id: int) -> str:
-        self.__select_one(f'select u.name from usernames u, telegram_accounts t where t.telegram_id = {id} and t.id = u.id')
+        return self.__select_one(f'select u.name from usernames u, telegram_accounts t where t.telegram_id = {id} and t.id = u.id')
 
     def get_stop_working_hour_by_tg_id(self, id: int) -> int:
         sql_query = f'select w.stop_working_hour from works w, telegram_accounts t where t.telegram_id = {id} and w.id = t.id'
@@ -44,7 +44,7 @@ class bald_bookeeper_bot_db_client:
                     return stop_work_hour[0]
 
     def get_dota_id_by_tg_id(self, id: int) -> str:
-        self.__select_one(f'select d.dota_account_id from dota_accounts d, telegram_accounts t where t.telegram_id = {id} and t.id = d.id')
+        return self.__select_one(f'select d.dota_account_id from dota_accounts d, telegram_accounts t where t.telegram_id = {id} and t.id = d.id')
 
     def get_all_dota_ids(self) -> list:
         sql_query = 'select dota_account_id from dota_accounts'
@@ -56,10 +56,10 @@ class bald_bookeeper_bot_db_client:
                 return [dota_id[0] for dota_id in cursor.fetchall()]
 
     def get_username_by_dota_id(self, id: int) -> str:
-        self.__select_one(f'select u.name from dota_accounts d, usernames u where d.dota_account_id = {id} and d.id = u.id')
+        return self.__select_one(f'select u.name from dota_accounts d, usernames u where d.dota_account_id = {id} and d.id = u.id')
 
     def get_last_match_id(self, dota_account_id: int) -> int:
-        self.__select_one(f'select last_match_id from dota_accounts where dota_account_id = {dota_account_id};')
+        return self.__select_one(f'select last_match_id from dota_accounts where dota_account_id = {dota_account_id};')
 
     def update_last_match_id(self, dota_account_id: int, last_match_id: int):
         sql_query = f'update dota_accounts set last_match_id = {last_match_id} where dota_account_id = {dota_account_id};'

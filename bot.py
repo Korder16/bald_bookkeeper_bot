@@ -103,9 +103,9 @@ async def last_game(message: types.Message):
     await message.answer_photo(response_image)
 
     if is_win:
-        photo_name = current_photo_ids['win_game']
+        photo_name = bald_bookeeper_bot_db_client().get_miracle_file_id()
     else:
-        photo_name = current_photo_ids['loose_game']
+        photo_name = bald_bookeeper_bot_db_client().get_golovach_file_id()
 
     await message.answer_photo(photo=photo_name)
 
@@ -119,9 +119,9 @@ async def not_today(message: types.Message):
     await message.answer_photo(response_image)
 
     if is_win:
-        photo_name = current_photo_ids['win_game']
+        photo_name = bald_bookeeper_bot_db_client().get_miracle_file_id()
     else:
-        photo_name = current_photo_ids['loose_game']
+        photo_name = bald_bookeeper_bot_db_client().get_golovach_file_id()
 
     await message.answer_photo(photo=photo_name)
 
