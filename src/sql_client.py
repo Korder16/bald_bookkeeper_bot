@@ -1,6 +1,5 @@
 import psycopg2
 from os import getenv
-import random
 
 class bald_bookeeper_bot_db_client:
 
@@ -96,7 +95,7 @@ class bald_bookeeper_bot_db_client:
         return self.__get_tg_file_id_by_media_name('marathon')
 
     def get_random_dura_file_id(self) -> str:
-        return random.choice(self.__select_all(f"select tg_file_id from tg_media where media_name = 'dura';"))
+        return self.__select_one(f"select tg_file_id from tg_media where media_name = 'dura' order by RANDOM() limit 1;")
 
     def get_random_ibragym_file_id(self) -> str:
-        return random.choice(self.__select_all(f"select tg_file_id from tg_media where media_name = 'ibragym';"))
+        return self.__select_one(f"select tg_file_id from tg_media where media_name = 'ibragym' order by RANDOM() limit 1;")
