@@ -22,7 +22,7 @@ class image_api_generator_client:
 
         async with ClientSession() as session:
             async with session.get(url=f'{url}{endpoint}', json=last_match_results, headers=self.__headers) as response:
-                response = await response.json(content_type='text/html')
+                response = await response.json(content_type=None)
                 return io.BytesIO(base64.b64decode(response)).getvalue()
 
     async def get_teammates_statistics_image(self, user_id: str, allies_info: json):
@@ -34,5 +34,5 @@ class image_api_generator_client:
 
         async with ClientSession() as session:
             async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers, params=params) as response:
-                response = await response.json(content_type='text/html')
+                response = await response.json(content_type=None)
                 return io.BytesIO(base64.b64decode(response)).getvalue()
