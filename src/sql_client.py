@@ -81,8 +81,6 @@ class bald_bookeeper_bot_db_client:
             with connection.cursor() as cursor:
                 cursor.execute(sql_query)
 
-        print(f'Added new row in match_statistics_images: match_id={match_id}, tg_image_file_id={image_file_id}')
-
     def __get_tg_file_id_by_media_name(self, media_name: str) -> str:
         return self.__select_one(f"select tg_file_id from tg_media where media_name = '{media_name}';")
 

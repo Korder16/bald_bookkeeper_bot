@@ -105,7 +105,6 @@ async def last_game(message: types.Message):
     if db_client.is_match_image_file_id_exists(db_last_match_id):
         match_image_file_id = db_client.get_match_image_file_id(db_last_match_id)
         await message.answer_photo(photo=match_image_file_id)
-        print('sent by file id')
     else:
         client = image_api_generator_client()
         response_image = await client.get_last_game_statistics_image(last_match_results)
