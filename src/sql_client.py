@@ -1,6 +1,7 @@
 import psycopg2
 from os import getenv
 
+
 class bald_bookeeper_bot_db_client:
 
     def __connect(self):
@@ -67,6 +68,21 @@ class bald_bookeeper_bot_db_client:
             with connection.cursor() as cursor:
                 cursor.execute(sql_query)
 
+    def is_match_image_file_id_exists(self, match_id: int) -> bool:
+        return self.__select_one(f'select count(1) from match_statistics_images where match_id = {match_id}')
+
+    def get_match_image_file_id(self, match_id: int) -> str:
+        return self.__select_one(f'select tg_image_file_id from match_statistics_images where match_id = {match_id}')
+
+    def insert_match_image_file_id(self, match_id: int, image_file_id: str):
+        sql_query = f"insert into match_statistics_images (match_id, tg_image_file_id) values ({match_id}, '{image_file_id}')"
+
+        with self.__connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql_query)
+
+        print(f'Added new row in match_statistics_images: match_id={match_id}, tg_image_file_id={image_file_id}')
+
     def __get_tg_file_id_by_media_name(self, media_name: str) -> str:
         return self.__select_one(f"select tg_file_id from tg_media where media_name = '{media_name}';")
 
@@ -95,7 +111,7 @@ class bald_bookeeper_bot_db_client:
         return self.__get_tg_file_id_by_media_name('marathon')
 
     def get_random_dura_file_id(self) -> str:
-        return self.__select_one(f"select tg_file_id from tg_media where media_name = 'dura' order by RANDOM() limit 1;")
+        return self.__select_one("select tg_file_id from tg_media where media_name = 'dura' order by RANDOM() limit 1;")
 
     def get_random_ibragym_file_id(self) -> str:
-        return self.__select_one(f"select tg_file_id from tg_media where media_name = 'ibragym' order by RANDOM() limit 1;")
+        return self.__select_one("select tg_file_id from tg_media where media_name = 'ibragym' order by RANDOM() limit 1;")

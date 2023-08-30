@@ -98,14 +98,25 @@ async def last_game(message: types.Message):
     user_id = str(message.from_user.id)
     last_match_results, is_win = await get_last_match_results(user_id)
 
-    client = image_api_generator_client()
-    response_image = await client.get_last_game_statistics_image(last_match_results)
-    await message.answer_photo(response_image)
+    db_client = bald_bookeeper_bot_db_client()
+    dota_account_id = db_client.get_dota_id_by_tg_id(message.from_user.id)
+    db_last_match_id = db_client.get_last_match_id(dota_account_id)
+
+    if db_client.is_match_image_file_id_exists(db_last_match_id):
+        match_image_file_id = db_client.get_match_image_file_id(db_last_match_id)
+        await message.answer_photo(photo=match_image_file_id)
+        print('sent by file id')
+    else:
+        client = image_api_generator_client()
+        response_image = await client.get_last_game_statistics_image(last_match_results)
+        sent_photo = await message.answer_photo(response_image)
+
+        db_client.insert_match_image_file_id(db_last_match_id, sent_photo.photo[0].file_id)
 
     if is_win:
-        photo_name = bald_bookeeper_bot_db_client().get_miracle_file_id()
+        photo_name = db_client.get_miracle_file_id()
     else:
-        photo_name = bald_bookeeper_bot_db_client().get_golovach_file_id()
+        photo_name = db_client.get_golovach_file_id()
 
     await message.answer_photo(photo=photo_name)
 

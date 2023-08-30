@@ -51,6 +51,8 @@ class opendota_api_client:
         last_ranked_match = await asyncio.gather(*tasks)
 
         last_match_id = last_ranked_match[-1]['match_id']
+        db_client.update_last_match_id(dota_user_id, last_match_id)
+
         is_win = is_win_game(last_ranked_match[-1]['radiant_win'], last_ranked_match[-1]['player_slot'])
 
         last_ranked_match_info = await asyncio.gather(*[asyncio.ensure_future(self.get_last_ranked_match_info(last_match_id))])
