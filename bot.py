@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import aiogram.utils.markdown as fmt
 from os import getenv
 from dotenv import load_dotenv
-from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient
+from src import get_last_match_results, get_allies_info_for_last_two_weeks, get_today_info_message, get_mr_incredible_sticker, sticker_ids, count_days_without_marathon, count_day_from_ex_ancient, get_archenemy_hero
 import random
 from src import image_api_generator_client
 from src.sql_client import bald_bookeeper_bot_db_client
@@ -70,17 +70,17 @@ async def sigame_poll(message: types.Message):
 
 @dp.message_handler(commands='рама')
 async def show_rama(message: types.Message):
-    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_rama_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_rama_file_id())
 
 
 @dp.message_handler(commands='клоун')
 async def show_clown(message: types.Message):
-    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_clown_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_clown_file_id())
 
 
 @dp.message_handler(commands='дура')
 async def show_dura(message: types.Message):
-    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_random_dura_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_random_dura_file_id())
 
 
 @dp.message_handler(commands='домой')
@@ -93,57 +93,46 @@ async def salary(message: types.Message):
     await message.answer_sticker(sticker_ids['pay'])
 
 
-@dp.message_handler(commands='стата')
-async def last_game(message: types.Message):
-    user_id = str(message.from_user.id)
-    last_match_results, is_win = await get_last_match_results(user_id)
+async def get_last_match_result_image_id(is_win: bool):
+    db_client = bald_bookeeper_bot_db_client()
+
+    if is_win:
+        photo_name = await db_client.get_miracle_file_id()
+    else:
+        photo_name = await db_client.get_golovach_file_id()
+
+    return photo_name
+
+
+async def last_game_impl(message: types.Message, user_id: int):
+    last_match_results, is_win = await get_last_match_results(str(user_id))
 
     db_client = bald_bookeeper_bot_db_client()
-    dota_account_id = db_client.get_dota_id_by_tg_id(message.from_user.id)
-    db_last_match_id = db_client.get_last_match_id(dota_account_id)
+    dota_account_id = await db_client.get_dota_id_by_tg_id(user_id)
+    db_last_match_id = await db_client.get_last_match_id(dota_account_id)
 
-    if db_client.is_match_image_file_id_exists(db_last_match_id):
-        match_image_file_id = db_client.get_match_image_file_id(db_last_match_id)
+    if await db_client.is_match_image_file_id_exists(db_last_match_id):
+        match_image_file_id = await db_client.get_match_image_file_id(db_last_match_id)
         await message.answer_photo(photo=match_image_file_id)
     else:
         client = image_api_generator_client()
         response_image = await client.get_last_game_statistics_image(last_match_results)
         sent_photo = await message.answer_photo(response_image)
 
-        db_client.insert_match_image_file_id(db_last_match_id, sent_photo.photo[0].file_id)
+        await db_client.insert_match_image_file_id(db_last_match_id, sent_photo.photo[0].file_id)
 
-    if is_win:
-        photo_name = db_client.get_miracle_file_id()
-    else:
-        photo_name = db_client.get_golovach_file_id()
+    await message.answer_photo(photo=await get_last_match_result_image_id(is_win))
 
-    await message.answer_photo(photo=photo_name)
+
+@dp.message_handler(commands='стата')
+async def last_game(message: types.Message):
+    user_id = str(message.from_user.id)
+    await last_game_impl(message, user_id)
 
 
 @dp.message_handler(commands='не_сегодня')
 async def not_today(message: types.Message):
-    last_match_results, is_win = await get_last_match_results('234173758')
-
-    db_client = bald_bookeeper_bot_db_client()
-    dota_account_id = db_client.get_dota_id_by_tg_id(234173758)
-    db_last_match_id = db_client.get_last_match_id(dota_account_id)
-
-    if db_client.is_match_image_file_id_exists(db_last_match_id):
-        match_image_file_id = db_client.get_match_image_file_id(db_last_match_id)
-        await message.answer_photo(photo=match_image_file_id)
-    else:
-        client = image_api_generator_client()
-        response_image = await client.get_last_game_statistics_image(last_match_results)
-        sent_photo = await message.answer_photo(response_image)
-
-        db_client.insert_match_image_file_id(db_last_match_id, sent_photo.photo[0].file_id)
-
-    if is_win:
-        photo_name = bald_bookeeper_bot_db_client().get_miracle_file_id()
-    else:
-        photo_name = bald_bookeeper_bot_db_client().get_golovach_file_id()
-
-    await message.answer_photo(photo=photo_name)
+    await last_game_impl(message, 234173758)
 
 
 @dp.message_handler(commands='кенты')
@@ -159,36 +148,36 @@ async def teammates(message: types.Message):
 @dp.message_handler(commands='время')
 async def get_time(message: types.Message):
     user_id = message.from_user.id
-    await message.answer(get_today_info_message(user_id))
+    await message.answer(await get_today_info_message(user_id))
     await message.answer_sticker(get_mr_incredible_sticker())
 
 
 @dp.message_handler(commands='белка')
 async def squirrel(message: types.Message):
-    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_squirrel_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_squirrel_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @dp.message_handler(commands='ибрагим')
 async def ibragym(message: types.Message):
     user_id = str(message.from_user.id)
-
+    db_client = bald_bookeeper_bot_db_client()
     if user_id == '207565268':
-        await message.answer_animation(animation=bald_bookeeper_bot_db_client().get_squirrel_file_id())
+        await message.answer_animation(animation=await db_client.get_squirrel_file_id())
     else:
-        await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_random_ibragym_file_id())
+        await message.answer_photo(photo=await db_client.get_random_ibragym_file_id())
 
 
 @dp.message_handler(commands='дуза')
 async def medusa(message: types.Message):
-    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_medusa_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_medusa_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @dp.message_handler(commands='марафон')
 async def marathon(message: types.Message):
     await message.answer(count_days_without_marathon())
-    await message.answer_photo(photo=bald_bookeeper_bot_db_client().get_marathon_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_marathon_file_id())
 
 
 @dp.message_handler(commands='властелин')

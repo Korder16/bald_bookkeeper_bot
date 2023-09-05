@@ -1,1 +1,1 @@
-from .opendota_api_client import opendota_api_client, get_last_match_results, get_allies_info_for_last_two_weeks
+from .opendota_api_client import get_last_match_results, get_allies_info_for_last_two_weeks

@@ -39,7 +39,7 @@ class opendota_api_client:
 
     async def get_last_match_json(self, user_id: str):
         db_client = bald_bookeeper_bot_db_client()
-        dota_user_id = db_client.get_dota_id_by_tg_id(user_id)
+        dota_user_id = await db_client.get_dota_id_by_tg_id(user_id)
 
         last_match_id = ''
 
@@ -51,7 +51,7 @@ class opendota_api_client:
         last_ranked_match = await asyncio.gather(*tasks)
 
         last_match_id = last_ranked_match[-1]['match_id']
-        db_client.update_last_match_id(dota_user_id, last_match_id)
+        await db_client.update_last_match_id(dota_user_id, last_match_id)
 
         is_win = is_win_game(last_ranked_match[-1]['radiant_win'], last_ranked_match[-1]['player_slot'])
 
@@ -60,8 +60,7 @@ class opendota_api_client:
 
     async def get_allies_statistics_json(self, user_id: str):
 
-        db_client = bald_bookeeper_bot_db_client()
-        dota_user_id = db_client.get_dota_id_by_tg_id(user_id)
+        dota_user_id = await bald_bookeeper_bot_db_client().get_dota_id_by_tg_id(user_id)
 
         tasks = [
             asyncio.ensure_future(self.update_last_match_info(dota_user_id)),
