@@ -42,6 +42,7 @@ async def help(message: types.Message):
             fmt.text('/получка - стикер с получкой.'),
             fmt.text('/кенты - винрейт с кентами за последние 2 недели.'),
             fmt.text('/белка - лузстрик Рашида на белке.'),
+            fmt.text('/лега - 82 урона с дуэлей за 50 минут от Дениса.'),
             fmt.text('/Ибрагим - показывает Ибрагима.'),
             fmt.text('/марафон - показывает количество дней без марафона.'),
             fmt.text('/властелин - показывает, когда Михан был активным властелином.'),
@@ -185,6 +186,12 @@ async def ex_ancient(message: types.Message):
     await message.answer(count_day_from_ex_ancient())
 
 
+@dp.message_handler(commands='лега')
+async def legion_commander(message: types.Message):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_legion_commander_file_id())
+    await message.answer_sticker(sticker_ids['ronaldo'])
+
+
 @dp.message_handler(commands='пахать')
 async def work_hard(message: types.Message):
     work_urls = [
@@ -193,6 +200,12 @@ async def work_hard(message: types.Message):
     ]
 
     await message.answer(random.choice(work_urls))
+
+
+@dp.message_handler(content_types=['photo'])
+async def photo_handler(message: types.Message):
+    if message.from_user.id == 406351790:
+        await message.answer(message.photo[-1].file_id)
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
