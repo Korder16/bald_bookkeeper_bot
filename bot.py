@@ -164,7 +164,7 @@ async def ibragym(message: types.Message):
     user_id = str(message.from_user.id)
     db_client = bald_bookeeper_bot_db_client()
     if user_id == '207565268':
-        await message.answer_animation(animation=await db_client.get_squirrel_file_id())
+        await message.answer_animation(animation=await db_client.get_rock_file_id())
     else:
         await message.answer_photo(photo=await db_client.get_random_ibragym_file_id())
 
