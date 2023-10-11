@@ -42,6 +42,7 @@ async def help(message: types.Message):
             fmt.text('/получка - стикер с получкой.'),
             fmt.text('/кенты - винрейт с кентами за последние 2 недели.'),
             fmt.text('/белка - лузстрик Рашида на белке.'),
+            fmt.text('/позор - игра Ислама на аксе 0 24.'),
             fmt.text('/лега - 82 урона с дуэлей за 50 минут от Дениса.'),
             fmt.text('/Ибрагим - показывает Ибрагима.'),
             fmt.text('/марафон - показывает количество дней без марафона.'),
@@ -200,6 +201,11 @@ async def work_hard(message: types.Message):
     ]
 
     await message.answer(random.choice(work_urls))
+
+@dp.message_handler(commands='позор')
+async def shame(message: types.Message):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_shame_file_id())
+    await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @dp.message_handler(content_types=['photo'])
