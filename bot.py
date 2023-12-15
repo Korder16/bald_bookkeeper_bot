@@ -48,6 +48,7 @@ async def help(message: types.Message):
             fmt.text('/марафон - показывает количество дней без марафона.'),
             fmt.text('/властелин - показывает, когда Михан был активным властелином.'),
             fmt.text('/пахать - отвечает на вопрос, нужно ли пахать.'),
+            fmt.text('/пацаны - показывает Рашида + пацана.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -207,6 +208,9 @@ async def shame(message: types.Message):
     await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_shame_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
+@dp.message_handler(commands='пацаны')
+async def guys(message: types.Message):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_guys_file_id())
 
 @dp.message_handler(content_types=['photo'])
 async def photo_handler(message: types.Message):
