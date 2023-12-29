@@ -17,7 +17,6 @@ class image_api_generator_client:
 
     async def get_last_game_statistics_image(self, last_match_results: json) -> io.BytesIO:
         url = self.__make_url()
-
         endpoint = '/statistics/last_game'
 
         async with ClientSession() as session:

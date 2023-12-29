@@ -108,7 +108,7 @@ class bald_bookeeper_bot_db_client:
 
     async def get_legion_commander_file_id(self) -> str:
         return await self.__get_tg_file_id_by_media_name('legion_commander')
-    
+
     async def get_shame_file_id(self) -> str:
         return await self.__get_tg_file_id_by_media_name('shame')
 
