@@ -1,6 +1,7 @@
 import asyncpg
 from .config import load_config
 
+
 class bald_bookeeper_bot_db_client:
 
     async def __connect(self):

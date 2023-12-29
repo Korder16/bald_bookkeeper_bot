@@ -1,9 +1,11 @@
 from environs import Env
 from dataclasses import dataclass
 
+
 @dataclass
 class BotConfig:
     token: str
+
 
 @dataclass
 class DbConfig:
@@ -13,10 +15,12 @@ class DbConfig:
     host: str
     port: int
 
+
 @dataclass
 class ImageGeneratorConfig:
     host: str
     port: int
+
 
 @dataclass
 class Config:

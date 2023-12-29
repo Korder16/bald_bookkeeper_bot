@@ -4,6 +4,7 @@ import base64
 import io
 from ..config import load_config
 
+
 class image_api_generator_client:
 
     def __init__(self) -> None:
@@ -34,4 +35,5 @@ class image_api_generator_client:
         async with ClientSession() as session:
             async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers, params=params) as response:
                 response = await response.json(content_type=None)
-                return io.BytesIO(base64.b64decode(response)).getvalue()
+                result = io.BytesIO(base64.b64decode(response))
+                return result.getvalue()
