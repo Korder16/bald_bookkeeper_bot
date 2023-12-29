@@ -1,13 +1,11 @@
 import logging
 from aiogram import Bot, Dispatcher, executor
-from os import getenv
-from dotenv import load_dotenv
 from src.handlers.handlers import register_handlers
+from src.config import load_config
 
 if __name__ == "__main__":
-
-    load_dotenv()
-    bot_token = getenv("BALD_BOOKKEEPER_BOT_TOKEN")
+    config = load_config()
+    bot_token = config.bot_config.token
 
     if not bot_token:
         exit('Error: no token provided')

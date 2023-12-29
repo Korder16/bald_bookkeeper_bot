@@ -2,14 +2,14 @@ from aiohttp import ClientSession
 import json
 import base64
 import io
-from os import getenv
-
+from ..config import load_config
 
 class image_api_generator_client:
 
     def __init__(self) -> None:
-        self.__url = getenv("IMAGE_GENERATOR_API_URL")
-        self.__port = getenv("IMAGE_GENERATOR_API_PORT")
+        config = load_config()
+        self.__url = config.image_generator_config.host
+        self.__port = config.image_generator_config.port
         self.__headers = {'Content-type': 'application/json'}
 
     def __make_url(self):

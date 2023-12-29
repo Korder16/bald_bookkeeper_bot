@@ -1,16 +1,16 @@
 import asyncpg
-from os import getenv
-
+from .config import load_config
 
 class bald_bookeeper_bot_db_client:
 
     async def __connect(self):
+        config = load_config()
         return await asyncpg.connect(
-            database=getenv("DB_NAME"),
-            user=getenv("DB_USER"),
-            password=getenv("DB_PASSWORD"),
-            host=getenv("DB_HOST"),
-            port=getenv("DB_PORT")
+            database=config.db_config.name,
+            user=config.db_config.user,
+            password=config.db_config.password,
+            host=config.db_config.host,
+            port=config.db_config.port
         )
 
     async def __select_one(self, sql_query: str):
