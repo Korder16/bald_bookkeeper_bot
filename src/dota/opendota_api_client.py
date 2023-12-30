@@ -30,8 +30,8 @@ class opendota_api_client:
             async with session.get(f'{self.__url}{endpoint}') as response:
                 return await response.json()
 
-    async def get_allies_info(self, user_id: str):
-        endpoint = f'/players/{user_id}/peers?&lobby_type=7&date=14'
+    async def get_allies_info(self, user_id: str, date: int):
+        endpoint = f'/players/{user_id}/peers?&lobby_type=7&date={date}'
 
         async with ClientSession() as session:
             async with session.get(f'{self.__url}{endpoint}') as response:
@@ -58,13 +58,13 @@ class opendota_api_client:
         last_ranked_match_info = await asyncio.gather(*[asyncio.ensure_future(self.get_last_ranked_match_info(last_match_id))])
         return last_ranked_match_info[-1], is_win
 
-    async def get_allies_statistics_json(self, user_id: str):
+    async def get_allies_statistics_json(self, user_id: str, date: int):
 
         dota_user_id = await bald_bookeeper_bot_db_client().get_dota_id_by_tg_id(user_id)
 
         tasks = [
             asyncio.ensure_future(self.update_last_match_info(dota_user_id)),
-            asyncio.ensure_future(self.get_allies_info(dota_user_id))
+            asyncio.ensure_future(self.get_allies_info(dota_user_id, date))
         ]
 
         alies_statistics = await asyncio.gather(*tasks)
@@ -82,4 +82,9 @@ async def get_last_match_results(user_id: str):
 
 async def get_allies_info_for_last_two_weeks(user_id: str):
     client = opendota_api_client()
-    return await client.get_allies_statistics_json(user_id)
+    return await client.get_allies_statistics_json(user_id, 14)
+
+
+async def get_allies_info_for_last_year(user_id: str):
+    client = opendota_api_client()
+    return await client.get_allies_statistics_json(user_id, 365)

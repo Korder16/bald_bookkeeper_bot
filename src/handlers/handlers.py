@@ -6,7 +6,7 @@ import aiogram.utils.markdown as fmt
 from ..sql_client import bald_bookeeper_bot_db_client
 from ..stickers import sticker_ids
 from ..bookkeeper import count_day_from_ex_ancient, count_days_without_marathon
-from ..dota.opendota_api_client import get_last_match_results, get_allies_info_for_last_two_weeks
+from ..dota.opendota_api_client import get_last_match_results, get_allies_info_for_last_two_weeks, get_allies_info_for_last_year
 from ..image_generator_api_client import image_api_generator_client
 from ..bookkeeper import get_today_info_message, get_mr_incredible_sticker
 
@@ -62,6 +62,7 @@ async def help(message: Message):
             fmt.text('/куда - опрос, куда идем играть;'),
             fmt.text('/получка - стикер с получкой.'),
             fmt.text('/кенты - винрейт с кентами за последние 2 недели.'),
+            fmt.text('/кенты_за_год - винрейт с кентами за последние 365 дней.'),
             fmt.text('/белка - лузстрик Рашида на белке.'),
             fmt.text('/позор - игра Ислама на аксе 0 24.'),
             fmt.text('/лега - 82 урона с дуэлей за 50 минут от Дениса.'),
@@ -169,9 +170,20 @@ async def not_today(message: Message):
 
 
 @router.message(Command("кенты"))
-async def teammates(message: Message):
+async def teammates_last_two_weeks(message: Message):
     user_id = str(message.from_user.id)
     allies_info = await get_allies_info_for_last_two_weeks(user_id)
+
+    client = image_api_generator_client()
+    response_image = await client.get_teammates_statistics_image(user_id, allies_info)
+    response_buffered_file = BufferedInputFile(response_image, filename='teammates.webp')
+    await message.answer_photo(response_buffered_file)
+
+
+@router.message(Command("кенты_за_год"))
+async def teammates_last_year(message: Message):
+    user_id = str(message.from_user.id)
+    allies_info = await get_allies_info_for_last_year(user_id)
 
     client = image_api_generator_client()
     response_image = await client.get_teammates_statistics_image(user_id, allies_info)
