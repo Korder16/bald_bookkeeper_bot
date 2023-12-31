@@ -6,7 +6,7 @@ import aiogram.utils.markdown as fmt
 from ..sql_client import bald_bookeeper_bot_db_client
 from ..stickers import sticker_ids
 from ..bookkeeper import count_day_from_ex_ancient, count_days_without_marathon
-from ..dota.opendota_api_client import get_last_match_results, get_allies_info_for_last_two_weeks, get_allies_info_for_last_year
+from ..dota.opendota_api_client import get_last_match_results, get_allies_info_for_last_two_weeks, get_allies_info_for_last_year, get_player_totals_for_last_year
 from ..image_generator_api_client import image_api_generator_client
 from ..bookkeeper import get_today_info_message, get_mr_incredible_sticker
 
@@ -71,6 +71,7 @@ async def help(message: Message):
             fmt.text('/властелин - показывает, когда Михан был активным властелином.'),
             fmt.text('/пахать - отвечает на вопрос, нужно ли пахать.'),
             fmt.text('/пацаны - показывает Рашида + пацана.'),
+            fmt.text('/статистика_за_год - показывает статистику в доте за год.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -189,6 +190,14 @@ async def teammates_last_year(message: Message):
     response_image = await client.get_teammates_statistics_image(user_id, allies_info)
     response_buffered_file = BufferedInputFile(response_image, filename='teammates.webp')
     await message.answer_photo(response_buffered_file)
+
+@router.message(Command("статистика_за_год"))
+async def player_totals_last_year(message: Message):
+    user_id = str(message.from_user.id)
+
+    player_totals_info = await get_player_totals_for_last_year(user_id)
+
+    await message.answer(player_totals_info, parse_mode='html')
 
 
 @router.message(Command("время"))
