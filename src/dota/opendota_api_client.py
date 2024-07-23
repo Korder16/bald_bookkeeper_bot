@@ -17,8 +17,7 @@ class opendota_api_client:
                 pass
 
     async def get_last_ranked_match(self, user_id: str):
-        endpoint = f'/players/{user_id}/matches?limit=1&lobby_type=7'
-
+        endpoint = f'/players/{user_id}/matches?limit=1&significant=0'
         async with ClientSession() as session:
             async with session.get(f'{self.__url}{endpoint}') as response:
                 last_match_json = await response.json()
