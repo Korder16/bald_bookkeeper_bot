@@ -31,7 +31,7 @@ class opendota_api_client:
                 return await response.json()
 
     async def get_allies_info(self, user_id: str, date: int):
-        endpoint = f'/players/{user_id}/peers?&lobby_type=7&date={date}'
+        endpoint = f'/players/{user_id}/peers?significant=0&date={date}'
 
         async with ClientSession() as session:
             async with session.get(f'{self.__url}{endpoint}') as response:
