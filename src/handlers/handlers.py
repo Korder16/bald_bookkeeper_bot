@@ -72,6 +72,7 @@ async def help(message: Message):
             fmt.text('/пахать - отвечает на вопрос, нужно ли пахать.'),
             fmt.text('/пацаны - показывает Рашида + пацана.'),
             fmt.text('/статистика_за_год - показывает статистику в доте за год.'),
+            fmt.text('/стрелочники - показывает стрелочников в доте.'),
             sep='\n'
         ), parse_mode='HTML'
     )
@@ -216,6 +217,14 @@ async def work_hard(message: Message):
 
     await message.answer(choice(work_urls))
 
+# @router.message()
+# async def photo_handler(message: Message):
+#     if message.from_user.id == 406351790:
+#         await message.answer(message.photo[-1].file_id)
+
+@router.message(Command("стрелочники"))
+async def switchmen(message: Message):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_switchmen_file_id())
 
 @router.message(Command("пацаны"))
 async def guys(message: Message):

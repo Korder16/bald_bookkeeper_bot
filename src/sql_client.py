@@ -123,3 +123,6 @@ class bald_bookeeper_bot_db_client:
     async def get_random_ibragym_file_id(self) -> str:
         row = await self.__select_one("select tg_file_id from tg_media where media_name = 'ibragym' order by RANDOM() limit 1;")
         return row['tg_file_id']
+
+    async def get_switchmen_file_id(self) -> str:
+        return await self.__get_tg_file_id_by_media_name('switchmen')
