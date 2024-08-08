@@ -1,9 +1,5 @@
 from aiohttp import ClientSession
-import json
-import base64
-import io
 from ..config import load_config
-
 
 class image_api_generator_client:
 
@@ -16,24 +12,21 @@ class image_api_generator_client:
     def __make_url(self):
         return f'http://{self.__url}:{self.__port}'
 
-    async def get_last_game_statistics_image(self, last_match_results: json) -> io.BytesIO:
+    async def get_last_game_statistics_image(self, dota_account_id):
         url = self.__make_url()
         endpoint = '/statistics/last_game'
 
         async with ClientSession() as session:
-            async with session.get(url=f'{url}{endpoint}', json=last_match_results, headers=self.__headers) as response:
-                response = await response.json(content_type=None)
-                return io.BytesIO(base64.b64decode(response)).getvalue()
+            async with session.get(url=f'{url}{endpoint}?player_id={dota_account_id}', headers=self.__headers) as response:
+                return await response.json(content_type=None)
 
-    async def get_teammates_statistics_image(self, user_id: str, allies_info: json):
+    async def get_teammates_statistics_image(self, player_id: str):
         url = self.__make_url()
 
-        endpoint = '/statistics/teammates'
+        endpoint = f'/statistics/teammates'
 
-        params = {'user_id': user_id}
+        params = {'player_id': player_id}
 
         async with ClientSession() as session:
-            async with session.get(url=f'{url}{endpoint}', json=allies_info, headers=self.__headers, params=params) as response:
-                response = await response.json(content_type=None)
-                result = io.BytesIO(base64.b64decode(response))
-                return result.getvalue()
+            async with session.get(url=f'{url}{endpoint}', headers=self.__headers, params=params) as response:
+                return await response.json(content_type=None)

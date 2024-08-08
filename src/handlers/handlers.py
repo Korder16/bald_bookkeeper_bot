@@ -1,19 +1,19 @@
 from aiogram import Dispatcher, Router
 from aiogram.filters import Command
-from aiogram.types import Message, BufferedInputFile
+from aiogram.types import Message, URLInputFile
 import aiogram.utils.markdown as fmt
 
 from ..sql_client import bald_bookeeper_bot_db_client
 from ..stickers import sticker_ids
 from ..bookkeeper import count_day_from_ex_ancient, count_days_without_marathon
-from ..dota.opendota_api_client import get_last_match_results, get_allies_info_for_last_two_weeks, get_allies_info_for_last_year, get_player_totals_for_last_year
 from ..image_generator_api_client import image_api_generator_client
 from ..bookkeeper import get_today_info_message, get_mr_incredible_sticker
+from ..config import load_config
 
 from random import choice
 
 router = Router()
-
+config = load_config()
 
 async def get_last_match_result_image_id(is_win: bool):
     db_client = bald_bookeeper_bot_db_client()
@@ -27,25 +27,17 @@ async def get_last_match_result_image_id(is_win: bool):
 
 
 async def last_game_impl(message: Message, user_id: int):
-    last_match_results, is_win = await get_last_match_results(str(user_id))
-
     db_client = bald_bookeeper_bot_db_client()
     dota_account_id = await db_client.get_dota_id_by_tg_id(user_id)
-    db_last_match_id = await db_client.get_last_match_id(dota_account_id)
 
-    is_match_image_file_id_exists = await db_client.is_match_image_file_id_exists(db_last_match_id)
-    if is_match_image_file_id_exists:
-        match_image_file_id = await db_client.get_match_image_file_id(db_last_match_id)
-        await message.answer_photo(photo=match_image_file_id)
-    else:
-        client = image_api_generator_client()
-        response_image = await client.get_last_game_statistics_image(last_match_results)
-        response_buffered_file = BufferedInputFile(response_image, filename='last_game.webp')
-        sent_photo = await message.answer_photo(response_buffered_file)
-
-        await db_client.insert_match_image_file_id(db_last_match_id, sent_photo.photo[0].file_id)
-
-    await message.answer_photo(photo=await get_last_match_result_image_id(is_win))
+    client = image_api_generator_client()
+    response = await client.get_last_game_statistics_image(dota_account_id)
+    
+    # TODO: add cache
+    image_url = f"http://{config.image_generator_config.host}:{config.image_generator_config.port}/images/{response['image_path']}"
+    image = URLInputFile(image_url)
+    await message.answer_photo(photo=image)
+    await message.answer_photo(photo=await get_last_match_result_image_id(response['is_win']))
 
 
 @router.message(Command("help"))
@@ -174,12 +166,16 @@ async def not_today(message: Message):
 @router.message(Command("кенты"))
 async def teammates_last_two_weeks(message: Message):
     user_id = str(message.from_user.id)
-    allies_info = await get_allies_info_for_last_two_weeks(user_id)
+
+    db_client = bald_bookeeper_bot_db_client()
+    dota_account_id = await db_client.get_dota_id_by_tg_id(user_id)
 
     client = image_api_generator_client()
-    response_image = await client.get_teammates_statistics_image(user_id, allies_info)
-    response_buffered_file = BufferedInputFile(response_image, filename='teammates.webp')
-    await message.answer_photo(response_buffered_file)
+    response = await client.get_teammates_statistics_image(dota_account_id)
+
+    image_url = f"http://{config.image_generator_config.host}:{config.image_generator_config.port}/images/{response['image_path']}"
+    image = URLInputFile(image_url)
+    await message.answer_photo(photo=image)
 
 
 @router.message(Command("кенты_за_год"))
