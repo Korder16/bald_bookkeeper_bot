@@ -1,25 +1,12 @@
 import asyncpg
-from .config import load_config
-
 
 class bald_bookeeper_bot_db_client:
 
-    async def __connect(self):
-        config = load_config()
-        return await asyncpg.connect(
-            database=config.db_config.name,
-            user=config.db_config.user,
-            password=config.db_config.password,
-            host=config.db_config.host,
-            port=config.db_config.port
-        )
+    def __init__(self, connection: asyncpg.pool.Pool):
+        self.connection = connection
 
     async def __select_one(self, sql_query: str):
-        connection = await self.__connect()
-
-        row = await connection.fetchrow(sql_query)
-        await connection.close()
-        return row
+        return await self.connection.fetchrow(sql_query)
 
     async def get_username_by_tg_id(self, id: int) -> str:
         row = await self.__select_one(f'select u.name from usernames u, telegram_accounts t where t.telegram_id = {id} and t.id = u.id')
@@ -42,12 +29,10 @@ class bald_bookeeper_bot_db_client:
 
     async def get_all_dota_ids(self) -> list:
         sql_query = 'select dota_account_id from dota_accounts'
+        with self.connection.cursor() as cursor:
+            cursor.execute(sql_query)
 
-        with self.__connect() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(sql_query)
-
-                return [dota_id[0] for dota_id in cursor.fetchall()]
+            return [dota_id[0] for dota_id in cursor.fetchall()]
 
     async def get_username_by_dota_id(self, id: int) -> str:
         row = await self.__select_one(f'select u.name from dota_accounts d, usernames u where d.dota_account_id = {id} and d.id = u.id')
@@ -60,9 +45,7 @@ class bald_bookeeper_bot_db_client:
     async def update_last_match_id(self, dota_account_id: int, last_match_id: int):
         sql_query = f'update dota_accounts set last_match_id = {last_match_id} where dota_account_id = {dota_account_id};'
 
-        connection = await self.__connect()
-        await connection.execute(sql_query)
-        await connection.close()
+        await self.connection.execute(sql_query)
 
     async def is_match_image_file_id_exists(self, match_id: int) -> bool:
         row = await self.__select_one(f'select count(1) from match_statistics_images where match_id = {match_id}')
@@ -75,9 +58,7 @@ class bald_bookeeper_bot_db_client:
     async def insert_match_image_file_id(self, match_id: int, image_file_id: str):
         sql_query = f"insert into match_statistics_images (match_id, tg_image_file_id) values ({match_id}, '{image_file_id}')"
 
-        connection = await self.__connect()
-        await connection.execute(sql_query)
-        await connection.close()
+        await self.connection.execute(sql_query)
 
     async def __get_tg_file_id_by_media_name(self, media_name: str) -> str:
         row = await self.__select_one(f"select tg_file_id from tg_media where media_name = '{media_name}';")

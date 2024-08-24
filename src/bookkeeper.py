@@ -11,8 +11,8 @@ def is_rashid_relaxing():
     return not is_now_working_time(18)
 
 
-async def make_user_message(user_id: int):
-    db_client = bald_bookeeper_bot_db_client()
+async def make_user_message(user_id: int, db_connection):
+    db_client = bald_bookeeper_bot_db_client(db_connection)
     username = await db_client.get_username_by_tg_id(user_id)
 
     warning_emoji = get_emoji_by_alias(emojis['warning'])
@@ -67,13 +67,13 @@ def get_days_until_weekend_message(day_of_week: int):
         return make_day_of_week_message(beach_emoji, day_of_week)
 
 
-async def get_today_info_message(user_id: int):
-    db_client = bald_bookeeper_bot_db_client()
+async def get_today_info_message(user_id: int, db_connection):
+    db_client = bald_bookeeper_bot_db_client(db_connection)
     stop_working_hour = await db_client.get_stop_working_hour_by_tg_id(user_id)
 
     day_of_week = get_day_of_week()
     message_tokens = [
-        await make_user_message(user_id),
+        await make_user_message(user_id, db_connection),
         get_hours_until_end_of_work_message(day_of_week, stop_working_hour),
         get_days_until_weekend_message(day_of_week)
     ]

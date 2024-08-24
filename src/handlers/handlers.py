@@ -15,8 +15,8 @@ from random import choice
 router = Router()
 config = load_config()
 
-async def get_last_match_result_image_id(is_win: bool):
-    db_client = bald_bookeeper_bot_db_client()
+async def get_last_match_result_image_id(is_win: bool, db_connection):
+    db_client = bald_bookeeper_bot_db_client(db_connection)
 
     if is_win:
         photo_name = await db_client.get_miracle_file_id()
@@ -26,8 +26,8 @@ async def get_last_match_result_image_id(is_win: bool):
     return photo_name
 
 
-async def last_game_impl(message: Message, user_id: int):
-    db_client = bald_bookeeper_bot_db_client()
+async def last_game_impl(message: Message, user_id: int, db_connection):
+    db_client = bald_bookeeper_bot_db_client(db_connection)
     dota_account_id = await db_client.get_dota_id_by_tg_id(user_id)
 
     client = image_api_generator_client()
@@ -37,7 +37,7 @@ async def last_game_impl(message: Message, user_id: int):
     image_url = f"http://{config.image_generator_config.host}:{config.image_generator_config.port}/images/{response['image_path']}"
     image = URLInputFile(image_url)
     await message.answer_photo(photo=image)
-    await message.answer_photo(photo=await get_last_match_result_image_id(response['is_win']))
+    await message.answer_photo(photo=await get_last_match_result_image_id(response['is_win'], db_connection))
 
 
 @router.message(Command("help"))
@@ -71,15 +71,15 @@ async def help(message: Message):
 
 
 @router.message(Command("белка"))
-async def squirrel(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_squirrel_file_id())
+async def squirrel(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_squirrel_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @router.message(Command("ибрагим"))
-async def ibragym(message: Message):
+async def ibragym(message: Message, db_connection):
     user_id = str(message.from_user.id)
-    db_client = bald_bookeeper_bot_db_client()
+    db_client = bald_bookeeper_bot_db_client(db_connection)
     if user_id == '207565268':
         await message.answer_animation(animation=await db_client.get_rock_file_id())
     else:
@@ -87,15 +87,15 @@ async def ibragym(message: Message):
 
 
 @router.message(Command("дуза"))
-async def medusa(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_medusa_file_id())
+async def medusa(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_medusa_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @router.message(Command("марафон"))
-async def marathon(message: Message):
+async def marathon(message: Message, db_connection):
     await message.answer(count_days_without_marathon())
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_marathon_file_id())
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_marathon_file_id())
 
 
 @router.message(Command("властелин"))
@@ -104,14 +104,14 @@ async def ex_ancient(message: Message):
 
 
 @router.message(Command("лега"))
-async def legion_commander(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_legion_commander_file_id())
+async def legion_commander(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_legion_commander_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
 @router.message(Command("позор"))
-async def shame(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_shame_file_id())
+async def shame(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_shame_file_id())
     await message.answer_sticker(sticker_ids['ronaldo'])
 
 
@@ -128,18 +128,18 @@ async def choose_activity(message: Message):
 
 
 @router.message(Command("рама"))
-async def show_rama(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_rama_file_id())
+async def show_rama(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_rama_file_id())
 
 
 @router.message(Command("клоун"))
-async def show_clown(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_clown_file_id())
+async def show_clown(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_clown_file_id())
 
 
 @router.message(Command("дура"))
-async def show_dura(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_random_dura_file_id())
+async def show_dura(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_random_dura_file_id())
 
 
 @router.message(Command("домой"))
@@ -153,21 +153,21 @@ async def salary(message: Message):
 
 
 @router.message(Command("стата"))
-async def last_game(message: Message):
+async def last_game(message: Message, db_connection):
     user_id = str(message.from_user.id)
-    await last_game_impl(message, user_id)
+    await last_game_impl(message, user_id, db_connection)
 
 
 @router.message(Command("не_сегодня"))
-async def not_today(message: Message):
-    await last_game_impl(message, 234173758)
+async def not_today(message: Message, db_connection):
+    await last_game_impl(message, 234173758, db_connection)
 
 
 @router.message(Command("кенты"))
-async def teammates_last_two_weeks(message: Message):
+async def teammates_last_two_weeks(message: Message, db_connection):
     user_id = str(message.from_user.id)
 
-    db_client = bald_bookeeper_bot_db_client()
+    db_client = bald_bookeeper_bot_db_client(db_connection)
     dota_account_id = await db_client.get_dota_id_by_tg_id(user_id)
 
     client = image_api_generator_client()
@@ -198,9 +198,9 @@ async def player_totals_last_year(message: Message):
 
 
 @router.message(Command("время"))
-async def get_time(message: Message):
+async def get_time(message: Message, db_connection):
     user_id = message.from_user.id
-    await message.answer(await get_today_info_message(user_id))
+    await message.answer(await get_today_info_message(user_id, db_connection))
     await message.answer_sticker(get_mr_incredible_sticker())
 
 
@@ -213,18 +213,13 @@ async def work_hard(message: Message):
 
     await message.answer(choice(work_urls))
 
-# @router.message()
-# async def photo_handler(message: Message):
-#     if message.from_user.id == 406351790:
-#         await message.answer(message.photo[-1].file_id)
-
 @router.message(Command("стрелочники"))
-async def switchmen(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_switchmen_file_id())
+async def switchmen(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_switchmen_file_id())
 
 @router.message(Command("пацаны"))
-async def guys(message: Message):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client().get_guys_file_id())
+async def guys(message: Message, db_connection):
+    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_guys_file_id())
 
 
 def register_handlers(dp: Dispatcher):
