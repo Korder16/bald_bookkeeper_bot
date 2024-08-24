@@ -15,6 +15,7 @@ from random import choice
 router = Router()
 config = load_config()
 
+
 async def get_last_match_result_image_id(is_win: bool, db_connection):
     db_client = bald_bookeeper_bot_db_client(db_connection)
 
@@ -32,55 +33,62 @@ async def last_game_impl(message: Message, user_id: int, db_connection):
 
     client = image_api_generator_client()
     response = await client.get_last_game_statistics_image(dota_account_id)
-    
+
     # TODO: add cache
     image_url = f"http://{config.image_generator_config.host}:{config.image_generator_config.port}/images/{response['image_path']}"
     image = URLInputFile(image_url)
     await message.answer_photo(photo=image)
-    await message.answer_photo(photo=await get_last_match_result_image_id(response['is_win'], db_connection))
+    await message.answer_photo(
+        photo=await get_last_match_result_image_id(response["is_win"], db_connection)
+    )
 
 
 @router.message(Command("help"))
 async def help(message: Message):
     await message.answer(
         fmt.text(
-            fmt.text('Список доступных комманд: '),
-            fmt.text('/время - показывает, сколько времени осталось до конца рабочего дня и рабочей недели;'),
-            fmt.text('/рама - показывает раму;'),
-            fmt.text('/клоун - показывает клоуна;'),
-            fmt.text('/дура - показывает дуру;'),
-            fmt.text('/стата - показывает результаты твоей последней игры;'),
-            fmt.text('/не_сегодня - показывает дату последней рейтинговой игры Нико;'),
-            fmt.text('/куда - опрос, куда идем играть;'),
-            fmt.text('/получка - стикер с получкой.'),
-            fmt.text('/кенты - винрейт с кентами за последние 2 недели.'),
-            fmt.text('/кенты_за_год - винрейт с кентами за последние 365 дней.'),
-            fmt.text('/белка - лузстрик Рашида на белке.'),
-            fmt.text('/позор - игра Ислама на аксе 0 24.'),
-            fmt.text('/лега - 82 урона с дуэлей за 50 минут от Дениса.'),
-            fmt.text('/Ибрагим - показывает Ибрагима.'),
-            fmt.text('/марафон - показывает количество дней без марафона.'),
-            fmt.text('/властелин - показывает, когда Михан был активным властелином.'),
-            fmt.text('/пахать - отвечает на вопрос, нужно ли пахать.'),
-            fmt.text('/пацаны - показывает Рашида + пацана.'),
-            fmt.text('/статистика_за_год - показывает статистику в доте за год.'),
-            fmt.text('/стрелочники - показывает стрелочников в доте.'),
-            sep='\n'
-        ), parse_mode='HTML'
+            fmt.text("Список доступных комманд: "),
+            fmt.text(
+                "/время - показывает, сколько времени осталось до конца рабочего дня и рабочей недели;"
+            ),
+            fmt.text("/рама - показывает раму;"),
+            fmt.text("/клоун - показывает клоуна;"),
+            fmt.text("/дура - показывает дуру;"),
+            fmt.text("/стата - показывает результаты твоей последней игры;"),
+            fmt.text("/не_сегодня - показывает дату последней рейтинговой игры Нико;"),
+            fmt.text("/куда - опрос, куда идем играть;"),
+            fmt.text("/получка - стикер с получкой."),
+            fmt.text("/кенты - винрейт с кентами за последние 2 недели."),
+            fmt.text("/кенты_за_год - винрейт с кентами за последние 365 дней."),
+            fmt.text("/белка - лузстрик Рашида на белке."),
+            fmt.text("/позор - игра Ислама на аксе 0 24."),
+            fmt.text("/лега - 82 урона с дуэлей за 50 минут от Дениса."),
+            fmt.text("/Ибрагим - показывает Ибрагима."),
+            fmt.text("/марафон - показывает количество дней без марафона."),
+            fmt.text("/властелин - показывает, когда Михан был активным властелином."),
+            fmt.text("/пахать - отвечает на вопрос, нужно ли пахать."),
+            fmt.text("/пацаны - показывает Рашида + пацана."),
+            fmt.text("/статистика_за_год - показывает статистику в доте за год."),
+            fmt.text("/стрелочники - показывает стрелочников в доте."),
+            sep="\n",
+        ),
+        parse_mode="HTML",
     )
 
 
 @router.message(Command("белка"))
 async def squirrel(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_squirrel_file_id())
-    await message.answer_sticker(sticker_ids['ronaldo'])
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_squirrel_file_id()
+    )
+    await message.answer_sticker(sticker_ids["ronaldo"])
 
 
 @router.message(Command("ибрагим"))
 async def ibragym(message: Message, db_connection):
     user_id = str(message.from_user.id)
     db_client = bald_bookeeper_bot_db_client(db_connection)
-    if user_id == '207565268':
+    if user_id == "207565268":
         await message.answer_animation(animation=await db_client.get_rock_file_id())
     else:
         await message.answer_photo(photo=await db_client.get_random_ibragym_file_id())
@@ -88,14 +96,18 @@ async def ibragym(message: Message, db_connection):
 
 @router.message(Command("дуза"))
 async def medusa(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_medusa_file_id())
-    await message.answer_sticker(sticker_ids['ronaldo'])
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_medusa_file_id()
+    )
+    await message.answer_sticker(sticker_ids["ronaldo"])
 
 
 @router.message(Command("марафон"))
 async def marathon(message: Message, db_connection):
     await message.answer(count_days_without_marathon())
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_marathon_file_id())
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_marathon_file_id()
+    )
 
 
 @router.message(Command("властелин"))
@@ -105,23 +117,29 @@ async def ex_ancient(message: Message):
 
 @router.message(Command("лега"))
 async def legion_commander(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_legion_commander_file_id())
-    await message.answer_sticker(sticker_ids['ronaldo'])
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(
+            db_connection
+        ).get_legion_commander_file_id()
+    )
+    await message.answer_sticker(sticker_ids["ronaldo"])
 
 
 @router.message(Command("позор"))
 async def shame(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_shame_file_id())
-    await message.answer_sticker(sticker_ids['ronaldo'])
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_shame_file_id()
+    )
+    await message.answer_sticker(sticker_ids["ronaldo"])
 
 
 @router.message(Command("куда"))
 async def choose_activity(message: Message):
     msg = await message.answer_poll(
-        question='Куда идем?',
-        options=['Дота', 'Своя', 'На боковую', 'На завод', 'Посмотреть результаты'],
+        question="Куда идем?",
+        options=["Дота", "Своя", "На боковую", "На завод", "Посмотреть результаты"],
         allows_multiple_answers=True,
-        is_anonymous=False
+        is_anonymous=False,
     )
 
     await msg.pin()
@@ -129,27 +147,35 @@ async def choose_activity(message: Message):
 
 @router.message(Command("рама"))
 async def show_rama(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_rama_file_id())
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_rama_file_id()
+    )
 
 
 @router.message(Command("клоун"))
 async def show_clown(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_clown_file_id())
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_clown_file_id()
+    )
 
 
 @router.message(Command("дура"))
 async def show_dura(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_random_dura_file_id())
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(
+            db_connection
+        ).get_random_dura_file_id()
+    )
 
 
 @router.message(Command("домой"))
 async def go_home(message: Message):
-    await message.answer_sticker(sticker_ids['go_home'])
+    await message.answer_sticker(sticker_ids["go_home"])
 
 
 @router.message(Command("получка"))
 async def salary(message: Message):
-    await message.answer_sticker(sticker_ids['pay'])
+    await message.answer_sticker(sticker_ids["pay"])
 
 
 @router.message(Command("стата"))
@@ -207,19 +233,25 @@ async def get_time(message: Message, db_connection):
 @router.message(Command("пахать"))
 async def work_hard(message: Message):
     work_urls = [
-        'https://youtube.com/shorts/Ldl4BIK3Hbo?feature=share',
-        'https://youtube.com/shorts/SCO2LHHY14o?feature=share'
+        "https://youtube.com/shorts/Ldl4BIK3Hbo?feature=share",
+        "https://youtube.com/shorts/SCO2LHHY14o?feature=share",
     ]
 
     await message.answer(choice(work_urls))
 
+
 @router.message(Command("стрелочники"))
 async def switchmen(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_switchmen_file_id())
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_switchmen_file_id()
+    )
+
 
 @router.message(Command("пацаны"))
 async def guys(message: Message, db_connection):
-    await message.answer_photo(photo=await bald_bookeeper_bot_db_client(db_connection).get_guys_file_id())
+    await message.answer_photo(
+        photo=await bald_bookeeper_bot_db_client(db_connection).get_guys_file_id()
+    )
 
 
 def register_handlers(dp: Dispatcher):

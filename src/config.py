@@ -34,18 +34,16 @@ def load_config():
     env.read_env()
 
     return Config(
-        bot_config=BotConfig(
-            token=env.str("BALD_BOOKKEEPER_BOT_TOKEN")
-        ),
+        bot_config=BotConfig(token=env.str("BALD_BOOKKEEPER_BOT_TOKEN")),
         db_config=DbConfig(
             name=env.str("DB_NAME"),
             user=env.str("DB_USER"),
             password=env.str("DB_PASSWORD"),
             host=env.str("DB_HOST"),
-            port=env.int("DB_PORT")
+            port=env.int("DB_PORT"),
         ),
         image_generator_config=ImageGeneratorConfig(
             host=env.str("IMAGE_GENERATOR_API_URL"),
-            port=env.int("IMAGE_GENERATOR_API_PORT")
-        )
+            port=env.int("IMAGE_GENERATOR_API_PORT"),
+        ),
     )

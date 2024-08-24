@@ -3,7 +3,7 @@ from pytz import timezone
 
 
 def get_timezone():
-    return timezone('Europe/Moscow')
+    return timezone("Europe/Moscow")
 
 
 def get_day_of_week():
@@ -16,13 +16,13 @@ def is_weekend(day: int):
 
 def get_day_of_week_name():
     russian_weekdays = {
-        0: 'понедельник',
-        1: 'вторник',
-        2: 'среда',
-        3: 'четверг',
-        4: 'пятница',
-        5: 'суббота',
-        6: 'воскресенье'
+        0: "понедельник",
+        1: "вторник",
+        2: "среда",
+        3: "четверг",
+        4: "пятница",
+        5: "суббота",
+        6: "воскресенье",
     }
 
     weekday_index = get_day_of_week()
