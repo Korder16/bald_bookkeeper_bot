@@ -178,23 +178,23 @@ async def teammates_last_two_weeks(message: Message, db_connection):
     await message.answer_photo(photo=image)
 
 
-@router.message(Command("кенты_за_год"))
-async def teammates_last_year(message: Message):
-    user_id = str(message.from_user.id)
-    allies_info = await get_allies_info_for_last_year(user_id)
+# @router.message(Command("кенты_за_год"))
+# async def teammates_last_year(message: Message):
+#     user_id = str(message.from_user.id)
+#     allies_info = await get_allies_info_for_last_year(user_id)
 
-    client = image_api_generator_client()
-    response_image = await client.get_teammates_statistics_image(user_id, allies_info)
-    response_buffered_file = BufferedInputFile(response_image, filename='teammates.webp')
-    await message.answer_photo(response_buffered_file)
+#     client = image_api_generator_client()
+#     response_image = await client.get_teammates_statistics_image(user_id, allies_info)
+#     response_buffered_file = BufferedInputFile(response_image, filename='teammates.webp')
+#     await message.answer_photo(response_buffered_file)
 
-@router.message(Command("статистика_за_год"))
-async def player_totals_last_year(message: Message):
-    user_id = str(message.from_user.id)
+# @router.message(Command("статистика_за_год"))
+# async def player_totals_last_year(message: Message):
+#     user_id = str(message.from_user.id)
 
-    player_totals_info = await get_player_totals_for_last_year(user_id)
+#     player_totals_info = await get_player_totals_for_last_year(user_id)
 
-    await message.answer(player_totals_info, parse_mode='html')
+#     await message.answer(player_totals_info, parse_mode='html')
 
 
 @router.message(Command("время"))
