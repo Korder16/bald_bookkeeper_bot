@@ -1,5 +1,19 @@
-version: "3"
+version: "3.9"
 
 services:
+  db:
+    container_name: bald_bookkeeper_db
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - bald_bookkeeper_bot_db_volume:/var/lib/postgresql/bald_bookkeeper_bot_db/data
+
+volumes:
+  bald_bookkeeper_bot_db_volume:
   bot:
     build: .
